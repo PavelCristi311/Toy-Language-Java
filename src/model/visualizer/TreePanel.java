@@ -45,13 +45,19 @@ public class TreePanel extends JPanel {
 
     private void drawEdges(Graphics2D g, Node n) {
         if (n == null) return;
-        if (n.left  != null) { drawEdgeOrthogonal(g, n, n.left);  drawEdges(g, n.left); }
-        if (n.right != null) { drawEdgeOrthogonal(g, n, n.right); drawEdges(g, n.right); }
+        if (n.left != null) {
+            drawEdgeOrthogonal(g, n, n.left);
+            drawEdges(g, n.left);
+        }
+        if (n.right != null) {
+            drawEdgeOrthogonal(g, n, n.right);
+            drawEdges(g, n.right);
+        }
     }
 
     private void drawEdgeOrthogonal(Graphics2D g, Node parent, Node child) {
         Rectangle parentBox = nodeBox(parent, g.getFontMetrics());
-        Rectangle childBox  = nodeBox(child,  g.getFontMetrics());
+        Rectangle childBox = nodeBox(child, g.getFontMetrics());
 
         int x1 = parentBox.x + parentBox.width / 2;
         int y1 = parentBox.y + parentBox.height;
@@ -60,7 +66,7 @@ public class TreePanel extends JPanel {
 
         int midY = Math.min(y1 + LEVEL_DY / 2, (y1 + y2) / 2);
 
-        g.setColor(new Color(130,130,130));
+        g.setColor(new Color(130, 130, 130));
         Path2D p = new Path2D.Double();
         p.moveTo(x1, y1);
         p.lineTo(x1, midY);
@@ -73,14 +79,17 @@ public class TreePanel extends JPanel {
 
     private void drawArrowHead(Graphics2D g, int x, int y, double ux, double uy) {
 
-        if (ux == 0 && uy == 0) { uy = -1; }
+        if (ux == 0 && uy == 0) {
+            uy = -1;
+        }
         double len = Math.hypot(ux, uy);
-        ux /= len; uy /= len;
+        ux /= len;
+        uy /= len;
         int t = 8;
         Polygon tri = new Polygon();
         tri.addPoint(x, y);
-        tri.addPoint((int)(x - ux * t - uy * 4), (int)(y - uy * t + ux * 4));
-        tri.addPoint((int)(x - ux * t + uy * 4), (int)(y - uy * t - ux * 4));
+        tri.addPoint((int) (x - ux * t - uy * 4), (int) (y - uy * t + ux * 4));
+        tri.addPoint((int) (x - ux * t + uy * 4), (int) (y - uy * t - ux * 4));
         g.fill(tri);
     }
 
@@ -88,7 +97,7 @@ public class TreePanel extends JPanel {
     private void drawNodes(Graphics2D g, Node n) {
         if (n == null) return;
         drawNodes(g, n.left);
-        drawNodeBox(g, n, new Color(240,247,255), new Color(25,71,138));
+        drawNodeBox(g, n, new Color(240, 247, 255), new Color(25, 71, 138));
         drawNodes(g, n.right);
     }
 
@@ -144,7 +153,7 @@ public class TreePanel extends JPanel {
         Rectangle b2 = measureBounds(start);
         if (root.left != null) b2 = b2.union(nodeBox(root, fm));
 
-        int w = Math.max(800, b2.x + b2.width  + MARGIN);
+        int w = Math.max(800, b2.x + b2.width + MARGIN);
         int h = Math.max(600, b2.y + b2.height + MARGIN);
         setPreferredSize(new Dimension(w, h));
         revalidate();
@@ -156,6 +165,7 @@ public class TreePanel extends JPanel {
         measureDfs(n, fm, acc);
         return acc;
     }
+
     private void measureDfs(Node n, FontMetrics fm, Rectangle acc) {
         if (n == null) return;
         measureDfs(n.left, fm, acc);
@@ -166,7 +176,7 @@ public class TreePanel extends JPanel {
         int ry = r.y + r.height;
         int ax = acc.x + acc.width;
         int ay = acc.y + acc.height;
-        if (rx > ax) acc.width  = rx - acc.x;
+        if (rx > ax) acc.width = rx - acc.x;
         if (ry > ay) acc.height = ry - acc.y;
         measureDfs(n.right, fm, acc);
     }
@@ -174,7 +184,7 @@ public class TreePanel extends JPanel {
 
     private void shiftAll(Node n, int dx, int dy) {
         if (n == null) return;
-        shiftAll(n.left,  dx, dy);
+        shiftAll(n.left, dx, dy);
         n.x += dx;
         n.y += dy;
         shiftAll(n.right, dx, dy);

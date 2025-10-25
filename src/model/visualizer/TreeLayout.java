@@ -16,7 +16,7 @@ public class TreeLayout {
         n.x = x;
         n.y = y;
 
-        place(n.left,  x - X_GAP, y + Y_GAP);
+        place(n.left, x - X_GAP, y + Y_GAP);
 
         place(n.right, x + X_GAP, y + Y_GAP);
     }

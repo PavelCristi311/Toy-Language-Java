@@ -40,8 +40,8 @@ public class Controller {
     }
 
     public void allStep(int index) throws StmtException, InterruptedException {
-        Node root=new Node("Program");
-        Node backupRoot=root;
+        Node root = new Node("Program");
+        Node backupRoot = root;
         TreePanel panel = new TreePanel(backupRoot);
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,19 +57,23 @@ public class Controller {
         print(prg.toString());
         int count = 1;
         while (!prg.getExeStack().isEmpty()) {
+
             Thread.sleep(1000);
+
             IStmt crtStmt = prg.getExeStack().pop();
-            if(!(crtStmt instanceof CompStmt)) {
+
+            if (!(crtStmt instanceof CompStmt)) {
                 if (root.left == null) root.left = new Node(crtStmt.toString());
-                else root.right=new Node(crtStmt.toString());
-            }
-            else {
+                else root.right = new Node(crtStmt.toString());
+            } else {
                 root.right = new Node(crtStmt.toString());
                 root = root.right;
             }
+
             TreeLayout.apply(backupRoot);
             panel.fitToContent();
             panel.repaint();
+
             crtStmt.execute(prg);
             print("Step " + count + ":\n");
             print(prg.toString());
