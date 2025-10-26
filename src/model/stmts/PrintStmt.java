@@ -1,6 +1,5 @@
 package model.stmts;
 
-import exceptions.StmtException;
 import model.expressions.IExp;
 import model.prg.PrgState;
 import model.prg.adt.MyIList;

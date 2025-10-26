@@ -1,6 +1,5 @@
 package model.expressions;
 
-import exceptions.ADTException;
 import model.prg.adt.MyIDictionary;
 import model.values.IValue;
 
@@ -12,7 +11,7 @@ public class VarExp implements IExp {
     }
 
     @Override
-    public IValue eval(MyIDictionary<String, IValue> dict) throws ADTException {
+    public IValue eval(MyIDictionary<String, IValue> dict) {
         return dict.getValue(id);
     }
 

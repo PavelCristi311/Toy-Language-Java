@@ -1,5 +1,6 @@
 import controller.Controller;
 import model.expressions.ArithExp;
+import model.expressions.LogicExp;
 import model.expressions.ValueExp;
 import model.expressions.VarExp;
 import model.prg.PrgState;
@@ -14,7 +15,7 @@ import model.values.IntValue;
 import repo.Repository;
 import view.View;
 
-void main() throws Exception {
+void main() {
     //int v; v=2;Print(v) is represented as:
     IStmt ex1 = new CompStmt(new VarDeclStmt("v", new IntType()),
             new CompStmt(new AssignStmt("v", new ValueExp(new IntValue(2))), new PrintStmt(new VarExp("v"))));
@@ -36,13 +37,22 @@ void main() throws Exception {
 
 
     Repository rep = new Repository();
-    rep.add(prg1);
-    rep.add(prg2);
-    rep.add(prg3);
-
     Controller con = new Controller(rep);
-
+    con.addPrg(prg1);
+    con.addPrg(prg2);
+    con.addPrg(prg3);
     View v = new View(con);
-
+    //bool c; print(c);
+    IStmt ex4=new CompStmt(new VarDeclStmt("c",new BoolType()),new PrintStmt(new VarExp("c")));
+    PrgState prg4 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), ex4);
+    con.addPrg(prg4);
+    //bool d;int e; d=true; e=6;if(d || e) then print(e); else print(d);
+    IStmt ex5=new CompStmt(new VarDeclStmt("d",new BoolType()),
+            new CompStmt(new VarDeclStmt("e",new IntType()),
+                    new CompStmt(new AssignStmt("d",new ValueExp(new BoolValue(false))),
+                            new CompStmt(new AssignStmt("e",new ValueExp(new IntValue(6))),new IfStmt(new LogicExp(new VarExp("d"),new VarExp("e"),"||"),
+                                    new PrintStmt(new VarExp("e")),new PrintStmt(new VarExp("d")))))));
+    PrgState prg5 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), ex5);
+    con.addPrg(prg5);
     v.mainView();
 }

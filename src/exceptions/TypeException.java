@@ -1,6 +1,6 @@
 package exceptions;
 
-public class TypeException extends RuntimeException {
+public class TypeException extends Exception {
     public TypeException(String message) {
         super(message);
     }
