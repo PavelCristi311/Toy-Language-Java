@@ -15,6 +15,11 @@ public class IntValue implements IValue {
         return new IntType();
     }
 
+    @Override
+    public IValue deepCopy() {
+        return new IntValue(value);
+    }
+
     public int getValue() {
         return value;
     }
@@ -22,5 +27,9 @@ public class IntValue implements IValue {
     @Override
     public String toString() {
         return String.valueOf(this.value);
+    }
+
+    public boolean equals(IntValue another) {
+        return another.getValue() == this.value;
     }
 }

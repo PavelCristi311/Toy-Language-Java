@@ -15,6 +15,11 @@ public class BoolValue implements IValue {
         return new BoolType();
     }
 
+    @Override
+    public IValue deepCopy() {
+        return new BoolValue(value);
+    }
+
     public boolean getValue() {
         return value;
     }
@@ -22,5 +27,9 @@ public class BoolValue implements IValue {
     @Override
     public String toString() {
         return String.valueOf(this.value);
+    }
+
+    public boolean equals(BoolValue another) {
+        return another.getValue() == this.value;
     }
 }
