@@ -3,20 +3,24 @@ package repo;
 import exceptions.RepoException;
 import model.prg.PrgState;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Scanner;
+
+import static java.lang.IO.print;
 
 public class Repository implements IRepo {
     private final ArrayList<PrgState> prgRepo;
     private int currentIndex = -1;
+    private final String logFilePath;
 
     public Repository() {
         prgRepo = new ArrayList<>();
-    }
-
-    @Override
-    public PrgState getCrtPrg() {
-        if (prgRepo.isEmpty()) throw new RepoException("There are no available programs! ");
-        return prgRepo.get(currentIndex);
+        print("Please submit the filepath: ");
+        logFilePath = new Scanner(System.in).nextLine();
     }
 
     @Override
@@ -38,6 +42,7 @@ public class Repository implements IRepo {
 
     @Override
     public void add(PrgState pS) {
+        if (currentIndex == -1) currentIndex++;
         prgRepo.add(pS);
     }
 
@@ -45,12 +50,37 @@ public class Repository implements IRepo {
     public void remove(int index) {
         if (index < 0 || index >= prgRepo.size()) throw new RepoException("Invalid provided index! ");
         prgRepo.remove(index);
+        if (currentIndex == index) currentIndex--;
+    }
+
+    @Override
+    public PrgState getCrtPrg() {
+        if (prgRepo.isEmpty()) throw new RepoException("There are no available programs! ");
+        return prgRepo.get(currentIndex);
     }
 
     @Override
     public PrgState getPrg(int index) {
         if (index < 0 || index >= prgRepo.size()) throw new RepoException("Invalid provided index! ");
         return prgRepo.get(index);
+    }
+
+    @Override
+    public void logCrtPrgStateExec() throws RepoException, IOException {
+        try (PrintWriter logFile = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath, true)))) {
+            logFile.append(getCrtPrg().toString());
+        } catch (IOException e) {
+            print("Failed logging! Error :" + e.getMessage());
+        }
+    }
+
+    @Override
+    public void logIndPrgStateExec(int index) throws RepoException, IOException {
+        try (PrintWriter logFile = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath, true)))) {
+            logFile.append(getPrg(index).toString());
+        } catch (IOException e) {
+            print("Failed logging! Error :" + e.getMessage());
+        }
     }
 
     public String toString() {

@@ -1,6 +1,9 @@
 package repo;
 
+import exceptions.RepoException;
 import model.prg.PrgState;
+
+import java.io.IOException;
 
 public interface IRepo {
     PrgState getCrtPrg();
@@ -16,4 +19,8 @@ public interface IRepo {
     void remove(int index);
 
     PrgState getPrg(int index);
+
+    void logCrtPrgStateExec() throws RepoException, IOException;
+
+    void logIndPrgStateExec(int index) throws RepoException, IOException;
 }
