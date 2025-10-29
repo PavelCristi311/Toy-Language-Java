@@ -36,6 +36,11 @@ public class LogicExp implements IExp {
         }
     }
 
+    @Override
+    public IExp deepCopy() {
+        return new LogicExp(e1.deepCopy(), e2.deepCopy(), op);
+    }
+
     public String toString() {
         return e1.toString() + " " + op + " " + e2.toString();
     }

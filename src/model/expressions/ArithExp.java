@@ -42,6 +42,11 @@ public class ArithExp implements IExp {
         return null;
     }
 
+    @Override
+    public IExp deepCopy() {
+        return new ArithExp(op, e1.deepCopy(), e2.deepCopy());
+    }
+
     public String toString() {
         return e1.toString() + op + e2.toString();
     }
