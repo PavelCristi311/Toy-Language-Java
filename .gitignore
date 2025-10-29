@@ -6,3 +6,5 @@ out/
 *.iws
 .DS_Store
 **/.DS_Store
+logs.txt
+test.in
