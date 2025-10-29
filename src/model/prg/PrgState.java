@@ -5,6 +5,9 @@ import model.prg.adt.MyIList;
 import model.prg.adt.MyIStack;
 import model.stmts.IStmt;
 import model.values.IValue;
+import model.values.StringValue;
+
+import java.io.BufferedReader;
 
 public class PrgState {
 
@@ -12,12 +15,14 @@ public class PrgState {
     MyIStack<IStmt> exeStack;
     MyIDictionary<String, IValue> symTable;
     MyIList<String> out;
+    MyIDictionary<StringValue, BufferedReader> fileTable;
     IStmt originalProgram;
 
-    public PrgState(MyIStack<IStmt> stk, MyIDictionary<String, IValue> symtbl, MyIList<String> ot, IStmt prg) {
+    public PrgState(MyIStack<IStmt> stk, MyIDictionary<String, IValue> symtbl, MyIList<String> ot, MyIDictionary<StringValue, BufferedReader> givenFileTable, IStmt prg) {
         exeStack = stk;
         symTable = symtbl;
         out = ot;
+        fileTable = givenFileTable;
         originalProgram = prg.deepCopy();
         stk.push(prg);
     }
@@ -46,6 +51,14 @@ public class PrgState {
         this.out = out;
     }
 
+    public MyIDictionary<StringValue, BufferedReader> getFileTable() {
+        return fileTable;
+    }
+
+    public void setFileTable(MyIDictionary<StringValue, BufferedReader> fileTable) {
+        this.fileTable = fileTable;
+    }
+
     public IStmt getOriginalProgram() {
         return originalProgram;
     }
@@ -55,7 +68,7 @@ public class PrgState {
     }
 
     public String toString() {
-        return exeStack + "\n" + symTable + "\n" + out + "\n\n";
+        return "------------------------------------------------------------------------------------------------------------------------------------------------------\n" + exeStack + "\n" + symTable + "\n" + out + "\n" + fileTable + "\n" + "------------------------------------------------------------------------------------------------------------------------------------------------------\n\n\n\n";
     }
 
 }
