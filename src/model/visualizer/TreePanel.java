@@ -1,12 +1,11 @@
 package model.visualizer;
 
-import model.visualizer.Node;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.*;
-import java.util.Objects;
-
+import java.awt.geom.Path2D;
+import java.awt.geom.RoundRectangle2D;
+import java.util.*;
+import java.util.List;
 
 public class TreePanel extends JPanel {
     private Node root;
@@ -14,8 +13,14 @@ public class TreePanel extends JPanel {
     private final int PADDING_X = 12;
     private final int PADDING_Y = 6;
     private final int ARC = 12;
+
     private final int LEVEL_DY = 60;
+
+    private final int H_GAP = 20;
+
     private final Stroke EDGE_STROKE = new BasicStroke(2f);
+
+    private final Map<Node, Dimension> sizeCache = new HashMap<>();
 
     public TreePanel(Node root) {
         this.root = root;
@@ -25,6 +30,13 @@ public class TreePanel extends JPanel {
 
     public void setRoot(Node root) {
         this.root = root;
+        sizeCache.clear();
+        revalidate();
+        repaint();
+    }
+
+    public void relayout() {
+        sizeCache.clear();
         revalidate();
         repaint();
     }
@@ -33,8 +45,16 @@ public class TreePanel extends JPanel {
     protected void paintComponent(Graphics g0) {
         super.paintComponent(g0);
         if (root == null) return;
+
         Graphics2D g = (Graphics2D) g0.create();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+
+        boolean shifted = fixHorizontalOverlaps(g);
+
+        ensureMarginsAndMaybeCenter(g);
+
+        if (shifted) fitToContent();
 
         g.setStroke(EDGE_STROKE);
         drawEdges(g, root);
@@ -42,6 +62,115 @@ public class TreePanel extends JPanel {
 
         g.dispose();
     }
+
+
+    private boolean fixHorizontalOverlaps(Graphics2D g) {
+        sizeCache.clear();
+        FontMetrics fm = g.getFontMetrics();
+
+        Map<Integer, List<Node>> levels = new HashMap<>();
+        collectByLevel(root, 0, levels);
+
+        boolean shifted = false;
+
+        for (int depth : new TreeSet<>(levels.keySet())) {
+            List<Node> list = levels.get(depth);
+            if (list == null || list.isEmpty()) continue;
+
+            list.sort(Comparator.comparingInt(a -> a.x));
+
+            int rightEdge = Integer.MIN_VALUE;
+            for (Node n : list) {
+                Rectangle r = nodeBox(n, fm);
+                int minLeft = (rightEdge == Integer.MIN_VALUE) ? r.x : rightEdge + H_GAP;
+
+                if (r.x < minLeft) {
+                    int dx = minLeft - r.x;
+                    shiftSubtree(n, dx);
+                    shifted = true;
+
+                    Rectangle r2 = nodeBox(n, fm);
+                    rightEdge = r2.x + r2.width;
+                } else {
+                    rightEdge = Math.max(rightEdge, r.x + r.width);
+                }
+            }
+        }
+
+        return shifted;
+    }
+
+    private void collectByLevel(Node n, int depth, Map<Integer, List<Node>> levels) {
+        if (n == null) return;
+        levels.computeIfAbsent(depth, k -> new ArrayList<>()).add(n);
+        collectByLevel(n.left, depth + 1, levels);
+        collectByLevel(n.right, depth + 1, levels);
+    }
+
+    private void shiftSubtree(Node n, int dx) {
+        if (n == null) return;
+        n.x += dx;
+        shiftSubtree(n.left, dx);
+        shiftSubtree(n.right, dx);
+    }
+
+
+    private void ensureMarginsAndMaybeCenter(Graphics2D g) {
+        final int MARGIN = 40;
+        FontMetrics fm = g.getFontMetrics();
+        Rectangle b = boundsAll(fm);
+
+        int dx = 0, dy = 0;
+
+        if (b.x < MARGIN) dx = MARGIN - b.x;
+        if (b.y < MARGIN) dy = MARGIN - b.y;
+
+        if (dx != 0 || dy != 0) {
+            shiftWholeTree(dx, dy);
+            b = boundsAll(fm);
+        }
+
+        int availableW = getWidth();
+        if (availableW > 0 && b.width + 2 * MARGIN < availableW) {
+            int wantLeft = (availableW - b.width) / 2;
+            int delta = wantLeft - b.x;
+            if (delta != 0) shiftWholeTree(delta, 0);
+        }
+    }
+
+    private Rectangle boundsAll(FontMetrics fm) {
+        Rectangle acc = new Rectangle(Integer.MAX_VALUE, Integer.MAX_VALUE, 0, 0);
+        boundsDfs(root, fm, acc);
+        return acc;
+    }
+
+    private void boundsDfs(Node n, FontMetrics fm, Rectangle acc) {
+        if (n == null) return;
+        boundsDfs(n.left, fm, acc);
+        Rectangle r = nodeBox(n, fm);
+        if (r.x < acc.x) acc.x = r.x;
+        if (r.y < acc.y) acc.y = r.y;
+        int rx = r.x + r.width;
+        int ry = r.y + r.height;
+        int ax = acc.x + acc.width;
+        int ay = acc.y + acc.height;
+        if (rx > ax) acc.width = rx - acc.x;
+        if (ry > ay) acc.height = ry - acc.y;
+        boundsDfs(n.right, fm, acc);
+    }
+
+    private void shiftWholeTree(int dx, int dy) {
+        shiftSubtree(root, dx);
+        shiftSubtreeY(root, dy);
+    }
+
+    private void shiftSubtreeY(Node n, int dy) {
+        if (n == null) return;
+        n.y += dy;
+        shiftSubtreeY(n.left, dy);
+        shiftSubtreeY(n.right, dy);
+    }
+
 
     private void drawEdges(Graphics2D g, Node n) {
         if (n == null) return;
@@ -56,8 +185,9 @@ public class TreePanel extends JPanel {
     }
 
     private void drawEdgeOrthogonal(Graphics2D g, Node parent, Node child) {
-        Rectangle parentBox = nodeBox(parent, g.getFontMetrics());
-        Rectangle childBox = nodeBox(child, g.getFontMetrics());
+        FontMetrics fm = g.getFontMetrics();
+        Rectangle parentBox = nodeBox(parent, fm);
+        Rectangle childBox = nodeBox(child, fm);
 
         int x1 = parentBox.x + parentBox.width / 2;
         int y1 = parentBox.y + parentBox.height;
@@ -78,10 +208,7 @@ public class TreePanel extends JPanel {
     }
 
     private void drawArrowHead(Graphics2D g, int x, int y, double ux, double uy) {
-
-        if (ux == 0 && uy == 0) {
-            uy = -1;
-        }
+        if (ux == 0 && uy == 0) uy = -1;
         double len = Math.hypot(ux, uy);
         ux /= len;
         uy /= len;
@@ -89,10 +216,11 @@ public class TreePanel extends JPanel {
         Polygon tri = new Polygon();
         tri.addPoint(x, y);
         tri.addPoint((int) (x - ux * t - uy * 4), (int) (y - uy * t + ux * 4));
-        tri.addPoint((int) (x - ux * t + uy * 4), (int) (y - uy * t - ux * 4));
+        tri.addPoint((int) (x - ux * t + uy * 4), (int) (y - uy * 4 - ux * 4));
+        tri.xpoints[2] = (int) (x - ux * t + uy * 4);
+        tri.ypoints[2] = (int) (y - uy * t - ux * 4);
         g.fill(tri);
     }
-
 
     private void drawNodes(Graphics2D g, Node n) {
         if (n == null) return;
@@ -113,54 +241,41 @@ public class TreePanel extends JPanel {
         g.draw(box);
 
         g.setColor(stroke.darker());
-        int tx = r.x + (r.width - fm.stringWidth(n.label)) / 2;
+        String text = Objects.toString(n.label, "");
+        int tx = r.x + (r.width - fm.stringWidth(text)) / 2;
         int ty = r.y + (r.height + fm.getAscent() - fm.getDescent()) / 2;
-        g.drawString(Objects.toString(n.label, ""), tx, ty);
+        g.drawString(text, tx, ty);
+    }
+
+    private Dimension measureNode(Node n, FontMetrics fm) {
+        return sizeCache.computeIfAbsent(n, k -> {
+            String text = Objects.toString(n.label, "");
+            int w = Math.max(40, fm.stringWidth(text) + 2 * PADDING_X);
+            int h = Math.max(28, fm.getHeight() + 2 * PADDING_Y);
+            return new Dimension(w, h);
+        });
     }
 
     private Rectangle nodeBox(Node n, FontMetrics fm) {
-        String text = Objects.toString(n.label, "");
-        int w = Math.max(40, fm.stringWidth(text) + 2 * PADDING_X);
-        int h = Math.max(28, fm.getHeight() + 2 * PADDING_Y);
-        int x = n.x - w / 2;
-        int y = n.y - h / 2;
-        return new Rectangle(x, y, w, h);
+        Dimension d = measureNode(n, fm);
+        int x = n.x - d.width / 2;
+        int y = n.y - d.height / 2;
+        return new Rectangle(x, y, d.width, d.height);
     }
-
 
     public void fitToContent() {
         if (root == null) return;
-        Node start = (root.left != null ? root.left : root);
-
         FontMetrics fm = getFontMetrics(getFont());
-        Rectangle bounds = measureBounds(start);
-
-        if (root.left != null) {
-            Rectangle r0 = nodeBox(root, fm);
-            bounds = bounds.union(r0);
-        }
+        Rectangle bounds = measureBounds(root, fm);
 
         int MARGIN = 40;
-        int dx = Math.max(0, MARGIN - bounds.x);
-        int dy = Math.max(0, MARGIN - bounds.y);
-
-        if (dx != 0 || dy != 0) {
-
-            shiftAll(root, dx, dy);
-
-        }
-
-        Rectangle b2 = measureBounds(start);
-        if (root.left != null) b2 = b2.union(nodeBox(root, fm));
-
-        int w = Math.max(800, b2.x + b2.width + MARGIN);
-        int h = Math.max(600, b2.y + b2.height + MARGIN);
+        int w = Math.max(800, bounds.x + bounds.width + MARGIN);
+        int h = Math.max(600, bounds.y + bounds.height + MARGIN);
         setPreferredSize(new Dimension(w, h));
         revalidate();
     }
 
-    private Rectangle measureBounds(Node n) {
-        FontMetrics fm = getFontMetrics(getFont());
+    private Rectangle measureBounds(Node n, FontMetrics fm) {
         Rectangle acc = new Rectangle(Integer.MAX_VALUE, Integer.MAX_VALUE, 0, 0);
         measureDfs(n, fm, acc);
         return acc;
@@ -179,14 +294,5 @@ public class TreePanel extends JPanel {
         if (rx > ax) acc.width = rx - acc.x;
         if (ry > ay) acc.height = ry - acc.y;
         measureDfs(n.right, fm, acc);
-    }
-
-
-    private void shiftAll(Node n, int dx, int dy) {
-        if (n == null) return;
-        shiftAll(n.left, dx, dy);
-        n.x += dx;
-        n.y += dy;
-        shiftAll(n.right, dx, dy);
     }
 }
