@@ -35,7 +35,7 @@ public class IfStmt implements IStmt {
 
     @Override
     public IStmt deepCopy() {
-        return new IfStmt(exp, thenS, elseS);
+        return new IfStmt(exp.deepCopy(), thenS.deepCopy(), elseS.deepCopy());
     }
 
     @Override

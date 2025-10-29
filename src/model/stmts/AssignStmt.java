@@ -21,7 +21,7 @@ public class AssignStmt implements IStmt {
         MyIDictionary<String, IValue> symTbl = state.getSymTable();
         if (symTbl.isDefined(id)) {
             IValue val = exp.eval(symTbl);
-            IType typeId = symTbl.getType(id);
+            IType typeId = symTbl.getValue(id).getType();
             if ((val.getType()).equals(typeId)) {
                 symTbl.update(id, val);
             } else
@@ -33,7 +33,7 @@ public class AssignStmt implements IStmt {
 
     @Override
     public IStmt deepCopy() {
-        return new AssignStmt(id, exp);
+        return new AssignStmt(id, exp.deepCopy());
     }
 
     @Override
@@ -41,7 +41,7 @@ public class AssignStmt implements IStmt {
         return id + "=" + exp.toString();
     }
 
-    public IExp getExp(){
+    public IExp getExp() {
         return exp;
     }
 }

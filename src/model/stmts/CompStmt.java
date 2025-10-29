@@ -22,7 +22,7 @@ public class CompStmt implements IStmt {
 
     @Override
     public IStmt deepCopy() {
-        return new CompStmt(first, second);
+        return new CompStmt(first.deepCopy(), second.deepCopy());
     }
 
     public String toString() {

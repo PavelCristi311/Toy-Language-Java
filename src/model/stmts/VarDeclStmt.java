@@ -4,10 +4,7 @@ import exceptions.StmtException;
 import model.prg.PrgState;
 import model.prg.adt.MyIDictionary;
 import model.type.IType;
-import model.type.IntType;
-import model.values.BoolValue;
 import model.values.IValue;
-import model.values.IntValue;
 
 public class VarDeclStmt implements IStmt {
     private final String id;
@@ -23,17 +20,14 @@ public class VarDeclStmt implements IStmt {
         MyIDictionary<String, IValue> symTable = state.getSymTable();
         if (symTable.isDefined(id)) throw new StmtException("ID already defined! \n");
         else {
-            if (this.type.equals(new IntType()))
-                symTable.put(id, new IntValue(0));
-            else
-                symTable.put(id, new BoolValue(false));
+            symTable.put(id, this.type.defaultValue());
         }
         return state;
     }
 
     @Override
     public IStmt deepCopy() {
-        return new VarDeclStmt(id, type);
+        return new VarDeclStmt(id, type.deepCopy());
     }
 
     @Override

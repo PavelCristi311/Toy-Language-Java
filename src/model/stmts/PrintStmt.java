@@ -24,7 +24,7 @@ public class PrintStmt implements IStmt {
 
     @Override
     public IStmt deepCopy() {
-        return null;
+        return new PrintStmt(exp.deepCopy());
     }
 
     public String toString() {

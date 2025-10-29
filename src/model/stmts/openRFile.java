@@ -1,0 +1,44 @@
+package model.stmts;
+
+import exceptions.StmtException;
+import model.expressions.IExp;
+import model.prg.PrgState;
+import model.type.StringType;
+import model.values.StringValue;
+
+import java.io.*;
+
+import static java.lang.IO.print;
+
+public class openRFile implements IStmt {
+    IExp exp;
+
+    public openRFile(IExp givenE) {
+        exp = givenE;
+    }
+
+    @Override
+    public PrgState execute(PrgState state) throws StmtException {
+        if (!exp.eval(state.getSymTable()).getType().equals(new StringType()))
+            throw new StmtException("The expression is not of String Type! \n");
+        if (state.getFileTable().isDefined((StringValue) exp.eval(state.getSymTable())))
+            throw new StmtException("The file is already open!");
+        try {
+            BufferedReader bfrdWrt = new BufferedReader(new FileReader(((StringValue) exp.eval(state.getSymTable())).getValue()));
+            state.getFileTable().put(((StringValue) exp.eval(state.getSymTable())), bfrdWrt);
+        } catch (Exception e) {
+            print(e.getMessage());
+        }
+        return state;
+    }
+
+    @Override
+    public IStmt deepCopy() {
+        return new openRFile(exp.deepCopy());
+    }
+
+    @Override
+    public String toString() {
+        return "openRFile(" + exp.toString() + ")";
+    }
+}
