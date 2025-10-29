@@ -1,5 +1,8 @@
 package model.type;
 
+import model.values.BoolValue;
+import model.values.IValue;
+
 public class BoolType implements IType {
     @Override
     public boolean equals(Object obj) {
@@ -9,5 +12,15 @@ public class BoolType implements IType {
     @Override
     public String toString() {
         return "bool";
+    }
+
+    @Override
+    public IValue defaultValue() {
+        return new BoolValue(false);
+    }
+
+    @Override
+    public IType deepCopy() {
+        return new BoolType();
     }
 }
