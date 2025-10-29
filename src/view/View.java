@@ -19,7 +19,7 @@ public class View {
             print(c.getRepo().toString());
             print("Choose the program you want to run: ");
             Scanner myObj = new Scanner(System.in);
-            try{
+            try {
                 int index = Integer.parseInt(myObj.nextLine()) - 1;
                 print("Choose one of the following: \n 1.Run one step of the program \n 2.Run the whole program \n");
                 int option = Integer.parseInt(myObj.nextLine());
@@ -40,7 +40,7 @@ public class View {
             } catch (Exception e) {
                 print("Invalid input! \n ");
             }
-            }
         }
+    }
 }
 
