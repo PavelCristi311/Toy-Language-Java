@@ -41,9 +41,9 @@ public class ExeStack<T> implements MyIStack<T> {
         Stack<T> copyTail = new Stack<>();
         copyTail.addAll(tail);
         StringBuilder result = new StringBuilder();
-        result.append("Execution Stack: \n");
+        result.append("Execution Stack: \n    ");
         for (T elem : copyTail.reversed()) {
-            result.append(elem).append(" \n ");
+            result.append(elem).append(" \n    ");
         }
         return result.toString();
     }

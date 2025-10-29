@@ -16,7 +16,14 @@ public class SymTable implements MyIDictionary<String, IValue> {
 
     @Override
     public void put(String key, IValue value) {
+        if (this.isDefined(key)) throw new ADTException("The given key is already defined! ");
         dict.put(key, value);
+    }
+
+    @Override
+    public void remove(String key) {
+        if (!this.isDefined(key)) throw new ADTException("The given key is not defined! ");
+        dict.remove(key);
     }
 
     @Override
@@ -30,7 +37,6 @@ public class SymTable implements MyIDictionary<String, IValue> {
         return dict.get(key);
     }
 
-    @Override
     public IType getType(String key) throws ADTException {
         if (!this.isDefined(key)) throw new ADTException("The given key is not defined! ");
         return dict.get(key).getType();
@@ -45,9 +51,9 @@ public class SymTable implements MyIDictionary<String, IValue> {
     @Override
     public String toString() {
         if (dict.isEmpty()) return "The Symbol Table is empty! \n";
-        StringBuilder result = new StringBuilder("The Symbol Table is as following: \n");
+        StringBuilder result = new StringBuilder("The Symbol Table is as following: \n    ");
         for (Map.Entry<String, IValue> e : dict.entrySet())
-            result.append("Key: ").append(e.getKey()).append(" - Value: ").append(e.getValue()).append('\n');
+            result.append("Key: ").append(e.getKey()).append(" - Value: ").append(e.getValue()).append("\n    ");
         return result.toString();
     }
 }
