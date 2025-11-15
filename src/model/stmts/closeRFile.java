@@ -18,11 +18,11 @@ public class closeRFile implements IStmt {
 
     @Override
     public PrgState execute(PrgState state) throws StmtException, IOException {
-        if (!exp.eval(state.getSymTable()).getType().equals(new StringType()))
+        if (!exp.eval(state.getSymTable(), state.getHeap()).getType().equals(new StringType()))
             throw new StmtException("The expression is not of String Type! \n");
-        BufferedReader bfrdWrt = state.getFileTable().getValue((StringValue) exp.eval(state.getSymTable()));
+        BufferedReader bfrdWrt = state.getFileTable().getValue((StringValue) exp.eval(state.getSymTable(), state.getHeap()));
         bfrdWrt.close();
-        state.getFileTable().remove((StringValue) exp.eval(state.getSymTable()));
+        state.getFileTable().remove((StringValue) exp.eval(state.getSymTable(), state.getHeap()));
         return state;
     }
 

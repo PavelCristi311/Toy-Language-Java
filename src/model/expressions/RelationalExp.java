@@ -2,6 +2,7 @@ package model.expressions;
 
 import exceptions.ExpException;
 import model.prg.adt.MyIDictionary;
+import model.prg.adt.MyIHeap;
 import model.values.BoolValue;
 import model.values.IValue;
 import model.values.IntValue;
@@ -20,29 +21,31 @@ public class RelationalExp implements IExp {
     }
 
     @Override
-    public IValue eval(MyIDictionary<String, IValue> dict) throws ExpException {
-        if (!(e1.eval(dict) instanceof IntValue)) throw new ExpException("The first expression is not an integer! ");
-        if (!(e2.eval(dict) instanceof IntValue)) throw new ExpException("The second expression is not an integer! ");
+    public IValue eval(MyIDictionary<String, IValue> dict, MyIHeap<Integer, IValue> hp) throws ExpException {
+        if (!(e1.eval(dict, hp) instanceof IntValue))
+            throw new ExpException("The first expression is not an integer! ");
+        if (!(e2.eval(dict, hp) instanceof IntValue))
+            throw new ExpException("The second expression is not an integer! ");
         if (!Objects.equals(op, "<=") && !Objects.equals(op, "<") && !Objects.equals(op, "==") && !Objects.equals(op, "!=") && !Objects.equals(op, ">") && !Objects.equals(op, ">="))
             throw new ExpException("Invalid operator! ");
         switch (op) {
             case "<=" -> {
-                return new BoolValue(((IntValue) e1.eval(dict)).getValue() <= ((IntValue) e2.eval(dict)).getValue());
+                return new BoolValue(((IntValue) e1.eval(dict, hp)).getValue() <= ((IntValue) e2.eval(dict, hp)).getValue());
             }
             case "<" -> {
-                return new BoolValue(((IntValue) e1.eval(dict)).getValue() < ((IntValue) e2.eval(dict)).getValue());
+                return new BoolValue(((IntValue) e1.eval(dict, hp)).getValue() < ((IntValue) e2.eval(dict, hp)).getValue());
             }
             case "==" -> {
-                return new BoolValue(((IntValue) e1.eval(dict)).getValue() == ((IntValue) e2.eval(dict)).getValue());
+                return new BoolValue(((IntValue) e1.eval(dict, hp)).getValue() == ((IntValue) e2.eval(dict, hp)).getValue());
             }
             case "!=" -> {
-                return new BoolValue(((IntValue) e1.eval(dict)).getValue() != ((IntValue) e2.eval(dict)).getValue());
+                return new BoolValue(((IntValue) e1.eval(dict, hp)).getValue() != ((IntValue) e2.eval(dict, hp)).getValue());
             }
             case ">" -> {
-                return new BoolValue(((IntValue) e1.eval(dict)).getValue() > ((IntValue) e2.eval(dict)).getValue());
+                return new BoolValue(((IntValue) e1.eval(dict, hp)).getValue() > ((IntValue) e2.eval(dict, hp)).getValue());
             }
             case ">=" -> {
-                return new BoolValue(((IntValue) e1.eval(dict)).getValue() >= ((IntValue) e2.eval(dict)).getValue());
+                return new BoolValue(((IntValue) e1.eval(dict, hp)).getValue() >= ((IntValue) e2.eval(dict, hp)).getValue());
             }
         }
         return null;

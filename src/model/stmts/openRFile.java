@@ -19,13 +19,13 @@ public class openRFile implements IStmt {
 
     @Override
     public PrgState execute(PrgState state) throws StmtException {
-        if (!exp.eval(state.getSymTable()).getType().equals(new StringType()))
+        if (!exp.eval(state.getSymTable(), state.getHeap()).getType().equals(new StringType()))
             throw new StmtException("The expression is not of String Type! \n");
-        if (state.getFileTable().isDefined((StringValue) exp.eval(state.getSymTable())))
+        if (state.getFileTable().isDefined((StringValue) exp.eval(state.getSymTable(), state.getHeap())))
             throw new StmtException("The file is already open!");
         try {
-            BufferedReader bfrdWrt = new BufferedReader(new FileReader(((StringValue) exp.eval(state.getSymTable())).getValue()));
-            state.getFileTable().put(((StringValue) exp.eval(state.getSymTable())), bfrdWrt);
+            BufferedReader bfrdWrt = new BufferedReader(new FileReader(((StringValue) exp.eval(state.getSymTable(), state.getHeap())).getValue()));
+            state.getFileTable().put(((StringValue) exp.eval(state.getSymTable(), state.getHeap())), bfrdWrt);
         } catch (Exception e) {
             print(e.getMessage());
         }

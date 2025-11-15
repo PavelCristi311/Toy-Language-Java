@@ -2,6 +2,7 @@ package model.expressions;
 
 import exceptions.ExpException;
 import model.prg.adt.MyIDictionary;
+import model.prg.adt.MyIHeap;
 import model.type.BoolType;
 import model.values.BoolValue;
 import model.values.IValue;
@@ -20,15 +21,15 @@ public class LogicExp implements IExp {
     }
 
     @Override
-    public IValue eval(MyIDictionary<String, IValue> dict) throws ExpException {
-        if (!(e1.eval(dict).getType() instanceof BoolType))
+    public IValue eval(MyIDictionary<String, IValue> dict, MyIHeap<Integer, IValue> hp) throws ExpException {
+        if (!(e1.eval(dict, hp).getType() instanceof BoolType))
             throw new ExpException("The first expression is not boolean! ");
-        if (!(e2.eval(dict).getType() instanceof BoolType))
+        if (!(e2.eval(dict, hp).getType() instanceof BoolType))
             throw new ExpException("The second expression is not boolean! ");
         if (!Objects.equals(op, "||") && !Objects.equals(op, "or") && !Objects.equals(op, "OR") && !Objects.equals(op, "&&") && !Objects.equals(op, "and") && !Objects.equals(op, "AND"))
             throw new ExpException("Invalid provided operator! ");
-        BoolValue nr1 = (BoolValue) e1.eval(dict);
-        BoolValue nr2 = (BoolValue) e2.eval(dict);
+        BoolValue nr1 = (BoolValue) e1.eval(dict, hp);
+        BoolValue nr2 = (BoolValue) e2.eval(dict, hp);
         if (Objects.equals(op, "||") || Objects.equals(op, "or") || Objects.equals(op, "OR")) {
             return new BoolValue(nr1.getValue() || nr2.getValue());
         } else {

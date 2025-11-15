@@ -3,10 +3,8 @@ package model.stmts;
 import exceptions.StmtException;
 import model.expressions.IExp;
 import model.prg.PrgState;
-import model.prg.adt.SymTable;
 import model.type.IntType;
 import model.type.StringType;
-import model.values.IValue;
 import model.values.IntValue;
 import model.values.StringValue;
 
@@ -29,9 +27,9 @@ public class readFile implements IStmt {
         if (!state.getSymTable().isDefined(var_name)) throw new StmtException("The variable name is not defined! \n");
         if (!(state.getSymTable().getValue(var_name).getType() instanceof IntType))
             throw new StmtException("The variable type is not int! \n");
-        if (!(exp.eval(state.getSymTable()).getType() instanceof StringType))
+        if (!(exp.eval(state.getSymTable(), state.getHeap()).getType() instanceof StringType))
             throw new StmtException("The expression value is not a string! \n");
-        StringValue filepath = (StringValue) exp.eval(state.getSymTable());
+        StringValue filepath = (StringValue) exp.eval(state.getSymTable(), state.getHeap());
         BufferedReader bfrdRdr = state.getFileTable().getValue(filepath);
         try {
             String str = bfrdRdr.readLine();

@@ -1,6 +1,7 @@
 package model.prg;
 
 import model.prg.adt.MyIDictionary;
+import model.prg.adt.MyIHeap;
 import model.prg.adt.MyIList;
 import model.prg.adt.MyIStack;
 import model.stmts.IStmt;
@@ -16,15 +17,23 @@ public class PrgState {
     MyIDictionary<String, IValue> symTable;
     MyIList<String> out;
     MyIDictionary<StringValue, BufferedReader> fileTable;
+
+
+    MyIHeap<Integer, IValue> heap;
     IStmt originalProgram;
 
-    public PrgState(MyIStack<IStmt> stk, MyIDictionary<String, IValue> symtbl, MyIList<String> ot, MyIDictionary<StringValue, BufferedReader> givenFileTable, IStmt prg) {
+    public PrgState(MyIStack<IStmt> stk, MyIDictionary<String, IValue> symtbl, MyIList<String> ot, MyIDictionary<StringValue, BufferedReader> givenFileTable, MyIHeap<Integer, IValue> givenHeap, IStmt prg) {
         exeStack = stk;
         symTable = symtbl;
         out = ot;
         fileTable = givenFileTable;
+        heap = givenHeap;
         originalProgram = prg.deepCopy();
         stk.push(prg);
+    }
+
+    public boolean isNotCompleted(){
+        return !exeStack.isEmpty();
     }
 
     public MyIDictionary<String, IValue> getSymTable() {
@@ -59,6 +68,14 @@ public class PrgState {
         this.fileTable = fileTable;
     }
 
+    public MyIHeap<Integer, IValue> getHeap() {
+        return heap;
+    }
+
+    public void setHeap(MyIHeap<Integer, IValue> heap) {
+        this.heap = heap;
+    }
+
     public IStmt getOriginalProgram() {
         return originalProgram;
     }
@@ -68,7 +85,7 @@ public class PrgState {
     }
 
     public String toString() {
-        return "------------------------------------------------------------------------------------------------------------------------------------------------------\n" + exeStack + "\n" + symTable + "\n" + out + "\n" + fileTable + "\n" + "------------------------------------------------------------------------------------------------------------------------------------------------------\n\n\n\n";
+        return "------------------------------------------------------------------------------------------------------------------------------------------------------\n" + exeStack + "\n" + symTable + "\n" + out + "\n" + fileTable + "\n" + heap + "\n" + "------------------------------------------------------------------------------------------------------------------------------------------------------\n\n\n\n";
     }
 
 }

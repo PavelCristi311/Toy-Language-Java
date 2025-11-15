@@ -15,10 +15,10 @@ public class PrintStmt implements IStmt {
 
     @Override
     public PrgState execute(PrgState state) {
-        print(exp.eval(state.getSymTable()));
+        print(exp.eval(state.getSymTable(), state.getHeap()));
         print("\n\n");
         MyIList<String> out = state.getOut();
-        out.add(exp.eval(state.getSymTable()).toString());
+        out.add(exp.eval(state.getSymTable(), state.getHeap()).toString());
         return state;
     }
 

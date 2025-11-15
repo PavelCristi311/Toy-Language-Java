@@ -89,26 +89,26 @@ void main() {
             new readFile(new VarExp("varf"), "varc"), new CompStmt(
             new PrintStmt(new VarExp("varc")), new closeRFile(new VarExp("varf"))))))))));
 
-    PrgState prg1 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), ex1);
-    PrgState prg2 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), ex2);
-    PrgState prg3 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), ex3);
-    PrgState prg4 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), ex4);
-    PrgState prg5 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), ex5);
-    PrgState prg6 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), ex6);
-    PrgState prg7 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), ex7);
-
-
-    Repository rep = new Repository();
-    Controller con = new Controller(rep);
-    con.addPrg(prg1);
-    con.addPrg(prg2);
-    con.addPrg(prg3);
-    con.addPrg(prg4);
-    con.addPrg(prg5);
-    con.addPrg(prg6);
-    con.addPrg(prg7);
-
-    View v = new View(con);
-
-    v.mainView();
+//    PrgState prg1 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), ex1);
+//    PrgState prg2 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), ex2);
+//    PrgState prg3 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), ex3);
+//    PrgState prg4 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), ex4);
+//    PrgState prg5 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), ex5);
+//    PrgState prg6 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), ex6);
+//    PrgState prg7 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), ex7);
+//
+//
+//    Repository rep = new Repository();
+//    Controller con = new Controller(rep);
+//    con.addPrg(prg1);
+//    con.addPrg(prg2);
+//    con.addPrg(prg3);
+//    con.addPrg(prg4);
+//    con.addPrg(prg5);
+//    con.addPrg(prg6);
+//    con.addPrg(prg7);
+//
+//    View v = new View(con);
+//
+//    v.mainView();
 }

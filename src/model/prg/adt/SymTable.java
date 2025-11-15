@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SymTable implements MyIDictionary<String, IValue> {
-    private final HashMap<String, IValue> dict;
+    private HashMap<String, IValue> dict;
 
     public SymTable() {
         dict = new HashMap<>();
@@ -37,9 +37,20 @@ public class SymTable implements MyIDictionary<String, IValue> {
         return dict.get(key);
     }
 
+    @Override
     public IType getType(String key) throws ADTException {
         if (!this.isDefined(key)) throw new ADTException("The given key is not defined! ");
         return dict.get(key).getType();
+    }
+
+    @Override
+    public Map<String, IValue> getContent() {
+        return dict;
+    }
+
+    @Override
+    public void setContent(Map<String, IValue> map) {
+        dict = (HashMap<String, IValue>) map;
     }
 
     @Override

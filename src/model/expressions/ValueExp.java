@@ -1,6 +1,7 @@
 package model.expressions;
 
 import model.prg.adt.MyIDictionary;
+import model.prg.adt.MyIHeap;
 import model.values.IValue;
 
 public class ValueExp implements IExp {
@@ -11,7 +12,7 @@ public class ValueExp implements IExp {
     }
 
     @Override
-    public IValue eval(MyIDictionary<String, IValue> dict) {
+    public IValue eval(MyIDictionary<String, IValue> dict, MyIHeap<Integer, IValue> hp) {
         return value;
     }
 

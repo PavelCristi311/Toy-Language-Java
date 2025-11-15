@@ -20,7 +20,7 @@ public class AssignStmt implements IStmt {
     public PrgState execute(PrgState state) throws StmtException {
         MyIDictionary<String, IValue> symTbl = state.getSymTable();
         if (symTbl.isDefined(id)) {
-            IValue val = exp.eval(symTbl);
+            IValue val = exp.eval(symTbl, state.getHeap());
             IType typeId = symTbl.getValue(id).getType();
             if ((val.getType()).equals(typeId)) {
                 symTbl.update(id, val);

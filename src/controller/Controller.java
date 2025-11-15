@@ -1,5 +1,4 @@
 package controller;
-
 import exceptions.ADTException;
 import exceptions.RepoException;
 import model.prg.PrgState;
@@ -7,14 +6,17 @@ import model.prg.adt.MyIStack;
 import model.stmts.CompStmt;
 import model.stmts.IStmt;
 import model.stmts.IfStmt;
+import model.values.IValue;
+import model.values.RefValue;
 import model.visualizer.TreeLayout;
 import model.visualizer.TreePanel;
 import repo.IRepo;
 import model.visualizer.Node;
-
 import javax.swing.*;
-
 import java.awt.*;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.IO.print;
 
@@ -93,7 +95,7 @@ public class Controller {
             int count = 1;
             while (!prg.getExeStack().isEmpty()) {
 
-                Thread.sleep(1000);
+                //Thread.sleep(1000);
 
                 IStmt crtStmt = prg.getExeStack().pop();
 
@@ -104,6 +106,10 @@ public class Controller {
                         if (crtStmt instanceof IfStmt) {
                             try {
                                 crtStmt.execute(prg);
+                                repo.logCrtPrgStateExec();
+                                prg.getHeap().setContent(safeGarbageCollector(
+                                        getAddrFromSymTable(prg.getSymTable().getContent().values()), getAddrFromHeap(prg.getHeap().getContent().values()),
+                                        prg.getHeap().getContent()));
                                 repo.logCrtPrgStateExec();
                             } catch (Exception e) {
                                 print("Failed to execute statement! Error: " + e.getMessage() + "\n");
@@ -122,6 +128,10 @@ public class Controller {
                         if (crtStmt instanceof IfStmt) {
                             try {
                                 crtStmt.execute(prg);
+                                repo.logCrtPrgStateExec();
+                                prg.getHeap().setContent(safeGarbageCollector(
+                                        getAddrFromSymTable(prg.getSymTable().getContent().values()), getAddrFromHeap(prg.getHeap().getContent().values()),
+                                        prg.getHeap().getContent()));
                                 repo.logCrtPrgStateExec();
                             } catch (Exception e) {
                                 print("Failed to execute statement! Error: " + e.getMessage() + "\n");
@@ -147,6 +157,10 @@ public class Controller {
                 panel.repaint();
                 try {
                     crtStmt.execute(prg);
+                    repo.logCrtPrgStateExec();
+                    prg.getHeap().setContent(safeGarbageCollector(
+                            getAddrFromSymTable(prg.getSymTable().getContent().values()), getAddrFromHeap(prg.getHeap().getContent().values()),
+                            prg.getHeap().getContent()));
                     repo.logCrtPrgStateExec();
                 } catch (Exception e) {
                     print("Failed to execute statement! Error: " + e.getMessage() + "\n");
@@ -197,6 +211,10 @@ public class Controller {
                             try {
                                 crtStmt.execute(prg);
                                 repo.logIndPrgStateExec(index);
+                                prg.getHeap().setContent(safeGarbageCollector(
+                                        getAddrFromSymTable(prg.getSymTable().getContent().values()), getAddrFromHeap(prg.getHeap().getContent().values()),
+                                        prg.getHeap().getContent()));
+                                repo.logIndPrgStateExec(index);
                             } catch (Exception e) {
                                 print("Failed to execute statement! Error: " + e.getMessage() + "\n");
                                 break;
@@ -214,6 +232,10 @@ public class Controller {
                         if (crtStmt instanceof IfStmt) {
                             try {
                                 crtStmt.execute(prg);
+                                repo.logIndPrgStateExec(index);
+                                prg.getHeap().setContent(safeGarbageCollector(
+                                        getAddrFromSymTable(prg.getSymTable().getContent().values()), getAddrFromHeap(prg.getHeap().getContent().values()),
+                                        prg.getHeap().getContent()));
                                 repo.logIndPrgStateExec(index);
                             } catch (Exception e) {
                                 print("Failed to execute statement! Error: " + e.getMessage() + "\n");
@@ -239,6 +261,10 @@ public class Controller {
                 panel.repaint();
                 try {
                     crtStmt.execute(prg);
+                    repo.logIndPrgStateExec(index);
+                    prg.getHeap().setContent(safeGarbageCollector(
+                            getAddrFromSymTable(prg.getSymTable().getContent().values()), getAddrFromHeap(prg.getHeap().getContent().values()),
+                            prg.getHeap().getContent()));
                     repo.logIndPrgStateExec(index);
                 } catch (Exception e) {
                     print("Failed to execute statement! Error: " + e.getMessage() + "\n");
@@ -273,4 +299,38 @@ public class Controller {
         }
     }
 
+    Map<Integer, IValue> unsafeGarbageCollector(List<Integer> symTableAddr, Map<Integer, IValue> heap) {
+        return heap.entrySet()
+                .stream()
+                .filter(e -> symTableAddr.contains(e.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    List<Integer> getAddrFromSymTable(Collection<IValue> symTableValues) {
+        return symTableValues.stream()
+                .filter(v -> v instanceof RefValue)
+                .map(v -> {
+                    RefValue v1 = (RefValue) v;
+                    return v1.getAddress();
+                })
+                .collect(Collectors.toList());
+    }
+
+    List<Integer> getAddrFromHeap(Collection<IValue> heapValues) {
+        return heapValues.stream()
+                .filter(v -> v instanceof RefValue)
+                .map(v -> {
+                    RefValue v1 = (RefValue) v;
+                    return v1.getAddress();
+                })
+                .collect(Collectors.toList());
+    }
+
+    Map<Integer, IValue> safeGarbageCollector(List<Integer> symTableAddr, List<Integer> heapAddr, Map<Integer, IValue> heap) {
+        return heap.entrySet()
+                .stream()
+                .filter(e -> symTableAddr.contains(e.getKey()) || heapAddr.contains(e.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
 }
+

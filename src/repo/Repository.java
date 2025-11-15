@@ -8,19 +8,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.List;
 
 import static java.lang.IO.print;
 
 public class Repository implements IRepo {
-    private final ArrayList<PrgState> prgRepo;
+    private List<PrgState> prgRepo;
     private int currentIndex = -1;
     private final String logFilePath;
 
     public Repository() {
         prgRepo = new ArrayList<>();
         print("Please submit the filepath: ");
-        logFilePath = new Scanner(System.in).nextLine();
+        //logFilePath = new Scanner(System.in).nextLine();
+        logFilePath = "logs.txt";
     }
 
     @Override
@@ -66,7 +67,7 @@ public class Repository implements IRepo {
     }
 
     @Override
-    public void logCrtPrgStateExec() throws RepoException, IOException {
+    public void logCrtPrgStateExec() throws RepoException {
         try (PrintWriter logFile = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath, true)))) {
             logFile.append(getCrtPrg().toString());
         } catch (IOException e) {
@@ -75,12 +76,22 @@ public class Repository implements IRepo {
     }
 
     @Override
-    public void logIndPrgStateExec(int index) throws RepoException, IOException {
+    public void logIndPrgStateExec(int index) throws RepoException {
         try (PrintWriter logFile = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath, true)))) {
             logFile.append(getPrg(index).toString());
         } catch (IOException e) {
             print("Failed logging! Error :" + e.getMessage());
         }
+    }
+
+    @Override
+    public List<PrgState> getPrgList() {
+        return prgRepo;
+    }
+
+    @Override
+    public void setPrgList(List<PrgState> list) {
+        prgRepo=list;
     }
 
     public String toString() {

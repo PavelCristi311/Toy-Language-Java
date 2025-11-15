@@ -22,8 +22,8 @@ public class IfStmt implements IStmt {
     @Override
     public PrgState execute(PrgState state) throws StmtException {
         MyIDictionary<String, IValue> dict = state.getSymTable();
-        if (exp.eval(dict).getType() instanceof BoolType) {
-            BoolValue v = (BoolValue) exp.eval(dict);
+        if (exp.eval(dict, state.getHeap()).getType() instanceof BoolType) {
+            BoolValue v = (BoolValue) exp.eval(dict, state.getHeap());
             if (v.getValue())
                 state.getExeStack().push(thenS);
             else
