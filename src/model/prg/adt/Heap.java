@@ -1,0 +1,77 @@
+package model.prg.adt;
+
+import exceptions.ADTException;
+import model.type.IType;
+import model.values.IValue;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Heap implements MyIHeap<Integer, IValue> {
+    private HashMap<Integer, IValue> heap;
+    private static int lastKey = 0;
+
+    public Integer getLastKey() {
+        return lastKey;
+    }
+
+    @Override
+    public Map<Integer, IValue> getContent() {
+        return heap;
+    }
+
+    @Override
+    public void setContent(Map<Integer, IValue> map) {
+        heap = (HashMap<Integer, IValue>) map;
+    }
+
+    public Integer getNextKey() {
+        return ++lastKey;
+    }
+
+    public Heap() {
+        this.heap = new HashMap<>();
+    }
+
+    @Override
+    public void put(Integer key, IValue value) {
+        heap.put(key, value);
+    }
+
+    @Override
+    public void remove(Integer key) {
+        if (!this.isDefined(key)) throw new ADTException("The given key is not defined! ");
+        heap.remove(key);
+    }
+
+    @Override
+    public boolean isDefined(Integer key) {
+        return heap.containsKey(key);
+    }
+
+    @Override
+    public IValue getValue(Integer key) {
+        if (!this.isDefined(key)) throw new ADTException("The given key is not defined! ");
+        return heap.get(key);
+    }
+
+    @Override
+    public void update(Integer key, IValue value) {
+        if (!this.isDefined(key)) throw new ADTException("The given key is not defined! ");
+        heap.replace(key, value);
+    }
+
+    @Override
+    public IType getType(Integer key) {
+        if (!this.isDefined(key)) throw new ADTException("The given key is not defined! ");
+        return heap.get(key).getType();
+    }
+
+    public String toString() {
+        if (heap.isEmpty()) return "The Heap is empty! \n";
+        StringBuilder result = new StringBuilder("The Heap is as following: \n    ");
+        for (Map.Entry<Integer, IValue> e : heap.entrySet())
+            result.append("Key: ").append(e.getKey()).append(" - Value: ").append(e.getValue()).append("\n    ");
+        return result.toString();
+    }
+}
