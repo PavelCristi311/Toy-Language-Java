@@ -1,5 +1,9 @@
 package model.prg;
 
+import exceptions.ADTException;
+import exceptions.ExpException;
+import exceptions.PrgException;
+import exceptions.StmtException;
 import model.prg.adt.MyIDictionary;
 import model.prg.adt.MyIHeap;
 import model.prg.adt.MyIList;
@@ -9,20 +13,22 @@ import model.values.IValue;
 import model.values.StringValue;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 
 public class PrgState {
-
 
     MyIStack<IStmt> exeStack;
     MyIDictionary<String, IValue> symTable;
     MyIList<String> out;
     MyIDictionary<StringValue, BufferedReader> fileTable;
-
+    final int id;
+    static int lastId = 0;
 
     MyIHeap<Integer, IValue> heap;
     IStmt originalProgram;
 
-    public PrgState(MyIStack<IStmt> stk, MyIDictionary<String, IValue> symtbl, MyIList<String> ot, MyIDictionary<StringValue, BufferedReader> givenFileTable, MyIHeap<Integer, IValue> givenHeap, IStmt prg) {
+    public PrgState(int givenId, MyIStack<IStmt> stk, MyIDictionary<String, IValue> symtbl, MyIList<String> ot, MyIDictionary<StringValue, BufferedReader> givenFileTable, MyIHeap<Integer, IValue> givenHeap, IStmt prg) {
+        id = givenId;
         exeStack = stk;
         symTable = symtbl;
         out = ot;
@@ -32,7 +38,11 @@ public class PrgState {
         stk.push(prg);
     }
 
-    public boolean isNotCompleted(){
+    synchronized public static int getNextId() {
+        return ++lastId;
+    }
+
+    public boolean isNotCompleted() {
         return !exeStack.isEmpty();
     }
 
@@ -84,8 +94,14 @@ public class PrgState {
         this.originalProgram = originalProgram;
     }
 
+    public PrgState oneStep() throws PrgException, ADTException, StmtException, IOException, ExpException {
+        if (exeStack.isEmpty()) throw new PrgException("The execution stack is empty! ");
+        IStmt crtStmt = exeStack.pop();
+        return crtStmt.execute(this);
+    }
+
     public String toString() {
-        return "------------------------------------------------------------------------------------------------------------------------------------------------------\n" + exeStack + "\n" + symTable + "\n" + out + "\n" + fileTable + "\n" + heap + "\n" + "------------------------------------------------------------------------------------------------------------------------------------------------------\n\n\n\n";
+        return "------------------------------------------------------------------------------------------------------------------------------------------------------\n" + "ID: " + id + "\n" + exeStack + "\n" + symTable + "\n" + out + "\n" + fileTable + "\n" + heap + "\n" + "------------------------------------------------------------------------------------------------------------------------------------------------------\n\n\n\n";
     }
 
 }
