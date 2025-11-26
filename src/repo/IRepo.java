@@ -7,24 +7,24 @@ import java.io.IOException;
 import java.util.List;
 
 public interface IRepo {
-    PrgState getCrtPrg();
 
     void add(PrgState pS);
 
     int getCurrentIndex();
 
-    void setCurrentIndex(int index);
+    void setCurrentIndex(int index) throws RepoException;
 
-    void next();
+    void next() throws RepoException;
 
-    void remove(int index);
+    void remove(int index) throws RepoException;
 
-    PrgState getPrg(int index);
-
-    void logCrtPrgStateExec() throws RepoException, IOException;
+    PrgState getPrg(int index) throws RepoException;
 
     void logIndPrgStateExec(int index) throws RepoException, IOException;
 
+    void logPrgStateExec(PrgState prg);
+
     List<PrgState> getPrgList();
+
     void setPrgList(List<PrgState> list);
 }

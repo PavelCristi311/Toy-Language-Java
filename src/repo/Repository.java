@@ -19,7 +19,7 @@ public class Repository implements IRepo {
 
     public Repository() {
         prgRepo = new ArrayList<>();
-        print("Please submit the filepath: ");
+        //print("Please submit the filepath: ");
         //logFilePath = new Scanner(System.in).nextLine();
         logFilePath = "logs.txt";
     }
@@ -30,13 +30,13 @@ public class Repository implements IRepo {
     }
 
     @Override
-    public void setCurrentIndex(int current) {
+    public void setCurrentIndex(int current) throws RepoException {
         if (current < 0 || current >= prgRepo.size()) throw new RepoException("Invalid provided index! ");
         this.currentIndex = current;
     }
 
     @Override
-    public void next() {
+    public void next() throws RepoException {
         if (currentIndex + 1 >= prgRepo.size()) throw new RepoException("There are no more programs! ");
         currentIndex += 1;
     }
@@ -48,32 +48,29 @@ public class Repository implements IRepo {
     }
 
     @Override
-    public void remove(int index) {
+    public void remove(int index) throws RepoException {
         if (index < 0 || index >= prgRepo.size()) throw new RepoException("Invalid provided index! ");
         prgRepo.remove(index);
         if (currentIndex == index) currentIndex--;
     }
 
-    @Override
-    public PrgState getCrtPrg() {
-        if (prgRepo.isEmpty()) throw new RepoException("There are no available programs! ");
-        return prgRepo.get(currentIndex);
-    }
 
     @Override
-    public PrgState getPrg(int index) {
+    public PrgState getPrg(int index) throws RepoException {
         if (index < 0 || index >= prgRepo.size()) throw new RepoException("Invalid provided index! ");
         return prgRepo.get(index);
     }
 
     @Override
-    public void logCrtPrgStateExec() throws RepoException {
+    public void logPrgStateExec(PrgState givenPrg) {
         try (PrintWriter logFile = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath, true)))) {
-            logFile.append(getCrtPrg().toString());
+            logFile.append(givenPrg.toString());
         } catch (IOException e) {
             print("Failed logging! Error :" + e.getMessage());
         }
     }
+
+
 
     @Override
     public void logIndPrgStateExec(int index) throws RepoException {
@@ -91,15 +88,21 @@ public class Repository implements IRepo {
 
     @Override
     public void setPrgList(List<PrgState> list) {
-        prgRepo=list;
+        prgRepo = list;
     }
 
+    @Override
     public String toString() {
         StringBuilder result = new StringBuilder("The repository contains the following programs: \n\n");
         for (int i = 0; i < prgRepo.size(); i++) {
             result.append(i + 1);
             result.append('.');
-            result.append(this.getPrg(i).toString());
+            try {
+                result.append(this.getPrg(i).toString());
+            } catch (RepoException e) {
+                print("Repository toString method error! ");
+                break;
+            }
             result.append('\n');
         }
         return result.toString();
