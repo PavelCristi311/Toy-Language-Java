@@ -17,13 +17,13 @@ public class FileTable implements MyIDictionary<StringValue, BufferedReader> {
     }
 
     @Override
-    public void put(StringValue key, BufferedReader value) {
+    public void put(StringValue key, BufferedReader value) throws ADTException {
         if (this.isDefined(key)) throw new ADTException("The given key is already defined!");
         dict.put(key, value);
     }
 
     @Override
-    public void remove(StringValue key) throws IOException {
+    public void remove(StringValue key) throws IOException, ADTException {
         if (!this.isDefined(key)) throw new ADTException("The given key is not defined! ");
         //noinspection EmptyTryBlock
         try (BufferedReader r = dict.remove(key)) {
@@ -36,13 +36,13 @@ public class FileTable implements MyIDictionary<StringValue, BufferedReader> {
     }
 
     @Override
-    public BufferedReader getValue(StringValue key) {
+    public BufferedReader getValue(StringValue key) throws ADTException {
         if (!this.isDefined(key)) throw new ADTException("The given key is not defined! ");
         return dict.get(key);
     }
 
     @Override
-    public void update(StringValue key, BufferedReader value) {
+    public void update(StringValue key, BufferedReader value) throws ADTException {
         if (!this.isDefined(key)) throw new ADTException("The given key is not defined! ");
         dict.replace(key, value);
     }
@@ -53,13 +53,18 @@ public class FileTable implements MyIDictionary<StringValue, BufferedReader> {
     }
 
     @Override
-    public Map<StringValue, BufferedReader> getContent() {
+    public HashMap<StringValue, BufferedReader> getContent() {
         return dict;
     }
 
     @Override
-    public void setContent(Map<StringValue, BufferedReader> map) {
-        dict = (HashMap<StringValue, BufferedReader>) map;
+    public void setContent(HashMap<StringValue, BufferedReader> map) {
+        dict = map;
+    }
+
+    @Override
+    public HashMap<StringValue, BufferedReader> deepCopy() {
+        return null;
     }
 
     public String toString() {

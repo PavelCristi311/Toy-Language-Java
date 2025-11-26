@@ -16,16 +16,21 @@ public class Heap implements MyIHeap<Integer, IValue> {
     }
 
     @Override
-    public Map<Integer, IValue> getContent() {
+    public HashMap<Integer, IValue> getContent() {
         return heap;
     }
 
     @Override
-    public void setContent(Map<Integer, IValue> map) {
-        heap = (HashMap<Integer, IValue>) map;
+    public void setContent(HashMap<Integer, IValue> map) {
+        heap = map;
     }
 
-    public Integer getNextKey() {
+    @Override
+    public HashMap<Integer, IValue> deepCopy() {
+        return null;
+    }
+
+    synchronized public Integer getNextKey() {
         return ++lastKey;
     }
 
@@ -39,7 +44,7 @@ public class Heap implements MyIHeap<Integer, IValue> {
     }
 
     @Override
-    public void remove(Integer key) {
+    public void remove(Integer key) throws ADTException {
         if (!this.isDefined(key)) throw new ADTException("The given key is not defined! ");
         heap.remove(key);
     }
@@ -50,19 +55,19 @@ public class Heap implements MyIHeap<Integer, IValue> {
     }
 
     @Override
-    public IValue getValue(Integer key) {
+    public IValue getValue(Integer key) throws ADTException {
         if (!this.isDefined(key)) throw new ADTException("The given key is not defined! ");
         return heap.get(key);
     }
 
     @Override
-    public void update(Integer key, IValue value) {
+    public void update(Integer key, IValue value) throws ADTException {
         if (!this.isDefined(key)) throw new ADTException("The given key is not defined! ");
         heap.replace(key, value);
     }
 
     @Override
-    public IType getType(Integer key) {
+    public IType getType(Integer key) throws ADTException {
         if (!this.isDefined(key)) throw new ADTException("The given key is not defined! ");
         return heap.get(key).getType();
     }

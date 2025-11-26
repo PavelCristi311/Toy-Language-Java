@@ -1,12 +1,14 @@
 package model.prg.adt;
 
+import exceptions.ADTException;
+
 public interface MyIStack<T> {
     void push(T elem);
 
-    T pop();
+    T pop() throws ADTException;
 
     boolean isEmpty();
 
-    T top();
+    T top() throws ADTException;
 }
 
