@@ -17,7 +17,7 @@ public class CompStmt implements IStmt {
         MyIStack<IStmt> stk = state.getExeStack();
         stk.push(second);
         stk.push(first);
-        return state;
+        return null;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package model.stmts;
 
+import exceptions.ADTException;
+import exceptions.ExpException;
 import exceptions.StmtException;
 import model.expressions.IExp;
 import model.prg.PrgState;
@@ -23,7 +25,7 @@ public class readFile implements IStmt {
     }
 
     @Override
-    public PrgState execute(PrgState state) throws StmtException, IOException {
+    public PrgState execute(PrgState state) throws StmtException, IOException, ADTException, ExpException {
         if (!state.getSymTable().isDefined(var_name)) throw new StmtException("The variable name is not defined! \n");
         if (!(state.getSymTable().getValue(var_name).getType() instanceof IntType))
             throw new StmtException("The variable type is not int! \n");
@@ -38,7 +40,7 @@ public class readFile implements IStmt {
         } catch (Exception e) {
             print("Reading from file failed ! Error: " + e.getMessage());
         }
-        return state;
+        return null;
     }
 
     @Override

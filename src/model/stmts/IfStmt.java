@@ -1,5 +1,7 @@
 package model.stmts;
 
+import exceptions.ADTException;
+import exceptions.ExpException;
 import exceptions.StmtException;
 import model.expressions.IExp;
 import model.prg.PrgState;
@@ -20,7 +22,7 @@ public class IfStmt implements IStmt {
     }
 
     @Override
-    public PrgState execute(PrgState state) throws StmtException {
+    public PrgState execute(PrgState state) throws StmtException, ExpException, ADTException {
         MyIDictionary<String, IValue> dict = state.getSymTable();
         if (exp.eval(dict, state.getHeap()).getType() instanceof BoolType) {
             BoolValue v = (BoolValue) exp.eval(dict, state.getHeap());
@@ -30,7 +32,7 @@ public class IfStmt implements IStmt {
                 state.getExeStack().push(elseS);
 
         } else throw new StmtException("Conditional expression is not boolean.");
-        return state;
+        return null;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package model.stmts;
 
+import exceptions.ADTException;
+import exceptions.ExpException;
 import exceptions.StmtException;
 import model.expressions.IExp;
 import model.prg.PrgState;
@@ -17,7 +19,7 @@ public class AssignStmt implements IStmt {
     }
 
     @Override
-    public PrgState execute(PrgState state) throws StmtException {
+    public PrgState execute(PrgState state) throws StmtException, ADTException, ExpException {
         MyIDictionary<String, IValue> symTbl = state.getSymTable();
         if (symTbl.isDefined(id)) {
             IValue val = exp.eval(symTbl, state.getHeap());
@@ -28,7 +30,7 @@ public class AssignStmt implements IStmt {
                 throw new StmtException("Declared type of variable" + id + " and type of the assigned expression do not match.");
 
         } else throw new StmtException("The used variable" + id + " was not declared before.");
-        return state;
+        return null;
     }
 
     @Override

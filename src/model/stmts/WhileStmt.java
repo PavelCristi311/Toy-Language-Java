@@ -1,5 +1,7 @@
 package model.stmts;
 
+import exceptions.ADTException;
+import exceptions.ExpException;
 import exceptions.StmtException;
 import model.expressions.IExp;
 import model.prg.PrgState;
@@ -18,14 +20,14 @@ public class WhileStmt implements IStmt {
     }
 
     @Override
-    public PrgState execute(PrgState state) throws StmtException, IOException {
+    public PrgState execute(PrgState state) throws StmtException, IOException, ExpException, ADTException {
         IValue eval = expression.eval(state.getSymTable(), state.getHeap());
         if (!(eval instanceof BoolValue)) throw new StmtException("The expression is not of Bool type! ");
         if (((BoolValue) eval).getValue()) {
             state.getExeStack().push(deepCopy());
             state.getExeStack().push(stmt);
         }
-        return state;
+        return null;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package model.stmts;
 
+import exceptions.ADTException;
 import exceptions.StmtException;
 import model.prg.PrgState;
 import model.prg.adt.MyIDictionary;
@@ -16,13 +17,13 @@ public class VarDeclStmt implements IStmt {
     }
 
     @Override
-    public PrgState execute(PrgState state) throws StmtException {
+    public PrgState execute(PrgState state) throws StmtException, ADTException {
         MyIDictionary<String, IValue> symTable = state.getSymTable();
         if (symTable.isDefined(id)) throw new StmtException("ID already defined! \n");
         else {
             symTable.put(id, this.type.defaultValue());
         }
-        return state;
+        return null;
     }
 
     @Override

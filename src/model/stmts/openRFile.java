@@ -1,5 +1,7 @@
 package model.stmts;
 
+import exceptions.ADTException;
+import exceptions.ExpException;
 import exceptions.StmtException;
 import model.expressions.IExp;
 import model.prg.PrgState;
@@ -18,7 +20,7 @@ public class openRFile implements IStmt {
     }
 
     @Override
-    public PrgState execute(PrgState state) throws StmtException {
+    public PrgState execute(PrgState state) throws StmtException, ExpException, ADTException {
         if (!exp.eval(state.getSymTable(), state.getHeap()).getType().equals(new StringType()))
             throw new StmtException("The expression is not of String Type! \n");
         if (state.getFileTable().isDefined((StringValue) exp.eval(state.getSymTable(), state.getHeap())))
@@ -29,7 +31,7 @@ public class openRFile implements IStmt {
         } catch (Exception e) {
             print(e.getMessage());
         }
-        return state;
+        return null;
     }
 
     @Override

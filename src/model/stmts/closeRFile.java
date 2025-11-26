@@ -1,5 +1,7 @@
 package model.stmts;
 
+import exceptions.ADTException;
+import exceptions.ExpException;
 import exceptions.StmtException;
 import model.expressions.IExp;
 import model.prg.PrgState;
@@ -17,13 +19,13 @@ public class closeRFile implements IStmt {
     }
 
     @Override
-    public PrgState execute(PrgState state) throws StmtException, IOException {
+    public PrgState execute(PrgState state) throws StmtException, IOException, ExpException, ADTException {
         if (!exp.eval(state.getSymTable(), state.getHeap()).getType().equals(new StringType()))
             throw new StmtException("The expression is not of String Type! \n");
         BufferedReader bfrdWrt = state.getFileTable().getValue((StringValue) exp.eval(state.getSymTable(), state.getHeap()));
         bfrdWrt.close();
         state.getFileTable().remove((StringValue) exp.eval(state.getSymTable(), state.getHeap()));
-        return state;
+        return null;
     }
 
     @Override

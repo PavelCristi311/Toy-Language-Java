@@ -1,5 +1,7 @@
 package model.stmts;
 
+import exceptions.ADTException;
+import exceptions.ExpException;
 import exceptions.StmtException;
 import model.expressions.IExp;
 import model.prg.PrgState;
@@ -19,7 +21,7 @@ public class newHM implements IStmt {
     }
 
     @Override
-    public PrgState execute(PrgState state) throws StmtException, IOException {
+    public PrgState execute(PrgState state) throws StmtException, IOException, ADTException, ExpException {
         if (!state.getSymTable().isDefined(varName)) throw new StmtException("The variable is not defined!");
         if (!(state.getSymTable().getType(varName) instanceof RefType))
             throw new StmtException("The variable is not of RefType!");
@@ -28,7 +30,7 @@ public class newHM implements IStmt {
             throw new StmtException("The expression is not of RefType!");
         state.getHeap().put(state.getHeap().getNextKey(), val);
         state.getSymTable().update(varName, new RefValue(state.getHeap().getLastKey(), val.getType()));
-        return state;
+        return null;
     }
 
     @Override
