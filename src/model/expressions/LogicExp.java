@@ -1,5 +1,6 @@
 package model.expressions;
 
+import exceptions.ADTException;
 import exceptions.ExpException;
 import model.prg.adt.MyIDictionary;
 import model.prg.adt.MyIHeap;
@@ -21,7 +22,7 @@ public class LogicExp implements IExp {
     }
 
     @Override
-    public IValue eval(MyIDictionary<String, IValue> dict, MyIHeap<Integer, IValue> hp) throws ExpException {
+    public IValue eval(MyIDictionary<String, IValue> dict, MyIHeap<Integer, IValue> hp) throws ExpException, ADTException {
         if (!(e1.eval(dict, hp).getType() instanceof BoolType))
             throw new ExpException("The first expression is not boolean! ");
         if (!(e2.eval(dict, hp).getType() instanceof BoolType))
