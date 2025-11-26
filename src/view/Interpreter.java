@@ -103,7 +103,7 @@ public class Interpreter {
                 new AssignStmt("x", new ValueExp(new IntValue(5))), new WhileStmt(
                 new RelationalExp(">", new VarExp("x"), new ValueExp(new IntValue(0))),
                 new CompStmt(new PrintStmt(new VarExp("x")),
-                new AssignStmt("x", new ArithExp('-', new VarExp("x"), new ValueExp(new IntValue(1))))))));
+                        new AssignStmt("x", new ArithExp('-', new VarExp("x"), new ValueExp(new IntValue(1))))))));
 
         //Example:
         //Ref int v;
@@ -120,14 +120,52 @@ public class Interpreter {
                 new newHM("v", new ValueExp(new IntValue(30))),
                 new PrintStmt(new rH(new rH(new VarExp("a")))))))));
 
-        PrgState prg1 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex1);
-        PrgState prg2 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex2);
-        PrgState prg3 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex3);
-        PrgState prg4 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex4);
-        PrgState prg5 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex5);
-        PrgState prg6 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex6);
-        PrgState prg8 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex8);
-        PrgState prg9 = new PrgState(new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex9);
+
+//      Example:
+//        int v;
+//        Ref int a;
+//        v=10;
+//        new(a,22);
+//        fork(wH(a,30);v=32;print(v);print(rH(a)));
+//        print(v);
+//        print(rH(a))
+//      At the end:
+//        Id=1
+//        SymTable_1={v->10,a->(1,int)}
+//        Id=10
+//        SymTable_10={v->32,a->(1,int)}
+//        Heap={1->30}
+//        Out={10,30,32,30}
+
+        IStmt ex10 = new CompStmt(new VarDeclStmt("v", new IntType()), new CompStmt(
+                new VarDeclStmt("a", new RefType(new IntType())), new CompStmt(
+                new AssignStmt("v", new ValueExp(new IntValue(10))), new CompStmt(
+                new newHM("a", new ValueExp(new IntValue(22))), new CompStmt(
+                new forkStmt(new CompStmt(new wH("a", new ValueExp(new IntValue(30))), new CompStmt(
+                        new AssignStmt("v", new ValueExp(new IntValue(32))), new CompStmt(
+                        new PrintStmt(new VarExp("v")), new PrintStmt(new rH(new VarExp("a")))))
+                )), new CompStmt(new PrintStmt(new VarExp("v")), new PrintStmt(new rH(new VarExp("a"))))
+        )))));
+
+        IStmt ex11 = new CompStmt(new VarDeclStmt("v", new RefType(new IntType())), new CompStmt(
+                new newHM("v", new ValueExp(new IntValue(20))), new CompStmt(
+                new VarDeclStmt("a", new RefType(new RefType(new IntType()))), new CompStmt(
+                new newHM("a", new VarExp("v")), new CompStmt(
+                new VarDeclStmt("b", new RefType(new RefType(new RefType(new IntType())))), new CompStmt(
+                new newHM("b", new VarExp("a")), new CompStmt(
+                new newHM("v", new ValueExp(new IntValue(30))),
+                new PrintStmt(new rH(new rH(new VarExp("a")))))))))));
+
+        PrgState prg1 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex1);
+        PrgState prg2 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex2);
+        PrgState prg3 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex3);
+        PrgState prg4 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex4);
+        PrgState prg5 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex5);
+        PrgState prg6 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex6);
+        PrgState prg7 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex11);
+        PrgState prg8 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex8);
+        PrgState prg9 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex9);
+        PrgState prg10 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex10);
 
         Repository rep1 = new Repository();
         rep1.add(prg1);
@@ -141,10 +179,14 @@ public class Interpreter {
         rep5.add(prg5);
         Repository rep6 = new Repository();
         rep6.add(prg6);
+        Repository rep7 = new Repository();
+        rep7.add(prg7);
         Repository rep8 = new Repository();
         rep8.add(prg8);
         Repository rep9 = new Repository();
         rep9.add(prg9);
+        Repository rep10 = new Repository();
+        rep10.add(prg10);
 
         Controller c1 = new Controller(rep1);
         Controller c2 = new Controller(rep2);
@@ -152,8 +194,10 @@ public class Interpreter {
         Controller c4 = new Controller(rep4);
         Controller c5 = new Controller(rep5);
         Controller c6 = new Controller(rep6);
+        Controller c7 = new Controller(rep7);
         Controller c8 = new Controller(rep8);
         Controller c9 = new Controller(rep9);
+        Controller c10 = new Controller(rep10);
 
         TextMenu menu = new TextMenu();
         menu.addCommand(new ExitCommand("0", "exit"));
@@ -163,8 +207,11 @@ public class Interpreter {
         menu.addCommand(new RunExample("4", ex4.toString(), c4));
         menu.addCommand(new RunExample("5", ex5.toString(), c5));
         menu.addCommand(new RunExample("6", ex6.toString(), c6));
+        menu.addCommand(new RunExample("7", ex11.toString(), c7));
         menu.addCommand(new RunExample("8", ex8.toString(), c8));
         menu.addCommand(new RunExample("9", ex9.toString(), c9));
+        menu.addCommand(new RunExample("10", ex10.toString(), c10));
+
         menu.show();
     }
 }
