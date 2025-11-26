@@ -92,6 +92,14 @@ public class Interpreter {
                 new wH("v", new ValueExp(new IntValue(30))),
                 new PrintStmt(new ArithExp('+', new rH(new VarExp("v")), new ValueExp(new IntValue(5))))))));
 
+        IStmt ex7 = new CompStmt(new VarDeclStmt("v", new RefType(new IntType())), new CompStmt(
+                new newHM("v", new ValueExp(new IntValue(20))), new CompStmt(
+                new VarDeclStmt("a", new RefType(new RefType(new IntType()))), new CompStmt(
+                new newHM("a", new VarExp("v")), new CompStmt(
+                new VarDeclStmt("b", new RefType(new RefType(new RefType(new IntType())))), new CompStmt(
+                new newHM("b", new VarExp("a")), new CompStmt(
+                new newHM("v", new ValueExp(new IntValue(30))),
+                new PrintStmt(new rH(new rH(new VarExp("a")))))))))));
         //int x;
         //x=5;
         //while(x>0){
@@ -147,14 +155,7 @@ public class Interpreter {
                 )), new CompStmt(new PrintStmt(new VarExp("v")), new PrintStmt(new rH(new VarExp("a"))))
         )))));
 
-        IStmt ex11 = new CompStmt(new VarDeclStmt("v", new RefType(new IntType())), new CompStmt(
-                new newHM("v", new ValueExp(new IntValue(20))), new CompStmt(
-                new VarDeclStmt("a", new RefType(new RefType(new IntType()))), new CompStmt(
-                new newHM("a", new VarExp("v")), new CompStmt(
-                new VarDeclStmt("b", new RefType(new RefType(new RefType(new IntType())))), new CompStmt(
-                new newHM("b", new VarExp("a")), new CompStmt(
-                new newHM("v", new ValueExp(new IntValue(30))),
-                new PrintStmt(new rH(new rH(new VarExp("a")))))))))));
+
 
         PrgState prg1 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex1);
         PrgState prg2 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex2);
@@ -162,7 +163,7 @@ public class Interpreter {
         PrgState prg4 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex4);
         PrgState prg5 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex5);
         PrgState prg6 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex6);
-        PrgState prg7 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex11);
+        PrgState prg7 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex7);
         PrgState prg8 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex8);
         PrgState prg9 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex9);
         PrgState prg10 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex10);
@@ -207,7 +208,7 @@ public class Interpreter {
         menu.addCommand(new RunExample("4", ex4.toString(), c4));
         menu.addCommand(new RunExample("5", ex5.toString(), c5));
         menu.addCommand(new RunExample("6", ex6.toString(), c6));
-        menu.addCommand(new RunExample("7", ex11.toString(), c7));
+        menu.addCommand(new RunExample("7", ex7.toString(), c7));
         menu.addCommand(new RunExample("8", ex8.toString(), c8));
         menu.addCommand(new RunExample("9", ex9.toString(), c9));
         menu.addCommand(new RunExample("10", ex10.toString(), c10));
