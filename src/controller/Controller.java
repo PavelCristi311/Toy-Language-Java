@@ -22,6 +22,7 @@ public class Controller {
 
     public Controller(IRepo givenRep) {
         repo = givenRep;
+        this.executor = Executors.newFixedThreadPool(2);
     }
 
     public IRepo getRepo() {
@@ -90,7 +91,7 @@ public class Controller {
         }
     }
 
-    List<PrgState> removeCompletedPrg(List<PrgState> inPrgList) {
+    public List<PrgState> removeCompletedPrg(List<PrgState> inPrgList) {
         return inPrgList.stream()
                 .filter(PrgState::isNotCompleted)
                 .collect(Collectors.toList());
@@ -130,4 +131,6 @@ public class Controller {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }
+
+
 
