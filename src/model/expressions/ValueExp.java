@@ -1,7 +1,9 @@
 package model.expressions;
 
+import exceptions.TypeException;
 import model.prg.adt.MyIDictionary;
 import model.prg.adt.MyIHeap;
+import model.type.IType;
 import model.values.IValue;
 
 public class ValueExp implements IExp {
@@ -19,6 +21,11 @@ public class ValueExp implements IExp {
     @Override
     public IExp deepCopy() {
         return new ValueExp(value.deepCopy());
+    }
+
+    @Override
+    public IType typecheck(MyIDictionary<String, IType> typeEnv) throws TypeException {
+        return value.getType();
     }
 
     public String toString() {

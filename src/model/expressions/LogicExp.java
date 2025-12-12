@@ -2,9 +2,12 @@ package model.expressions;
 
 import exceptions.ADTException;
 import exceptions.ExpException;
+import exceptions.TypeException;
 import model.prg.adt.MyIDictionary;
 import model.prg.adt.MyIHeap;
 import model.type.BoolType;
+import model.type.IType;
+import model.type.IntType;
 import model.values.BoolValue;
 import model.values.IValue;
 
@@ -41,6 +44,20 @@ public class LogicExp implements IExp {
     @Override
     public IExp deepCopy() {
         return new LogicExp(e1.deepCopy(), e2.deepCopy(), op);
+    }
+
+    @Override
+    public IType typecheck(MyIDictionary<String, IType> typeEnv) throws TypeException, ADTException {
+        IType typ1, typ2;
+        typ1 = e1.typecheck(typeEnv);
+        typ2 = e2.typecheck(typeEnv);
+        if (typ1.equals(new IntType())) {
+            if (typ2.equals(new IntType())) {
+                return new BoolType();
+            } else
+                throw new TypeException("Second operand is not a boolean\n");
+        } else
+            throw new TypeException("First operand is not a boolean\n");
     }
 
     public String toString() {

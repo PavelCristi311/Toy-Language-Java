@@ -1,8 +1,10 @@
 package model.expressions;
 
 import exceptions.ADTException;
+import exceptions.TypeException;
 import model.prg.adt.MyIDictionary;
 import model.prg.adt.MyIHeap;
+import model.type.IType;
 import model.values.IValue;
 
 public class VarExp implements IExp {
@@ -20,6 +22,11 @@ public class VarExp implements IExp {
     @Override
     public IExp deepCopy() {
         return new VarExp(id);
+    }
+
+    @Override
+    public IType typecheck(MyIDictionary<String, IType> typeEnv) throws TypeException, ADTException {
+        return typeEnv.getType(id);
     }
 
     @Override
