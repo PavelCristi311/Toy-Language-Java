@@ -3,6 +3,7 @@ package model.stmts;
 import exceptions.ADTException;
 import exceptions.ExpException;
 import exceptions.StmtException;
+import exceptions.TypeException;
 import model.expressions.IExp;
 import model.prg.PrgState;
 import model.prg.adt.MyIDictionary;
@@ -36,6 +37,16 @@ public class AssignStmt implements IStmt {
     @Override
     public IStmt deepCopy() {
         return new AssignStmt(id, exp.deepCopy());
+    }
+
+    @Override
+    public MyIDictionary<String, IType> typecheck(MyIDictionary<String, IType> typeEnv) throws TypeException, ADTException {
+        IType typevar = typeEnv.getType(id);
+        IType typexp = exp.typecheck(typeEnv);
+        if (typevar.equals(typexp))
+            return typeEnv;
+        else
+            throw new TypeException("Assignment: right hand side and left hand side have different types \n");
     }
 
     @Override

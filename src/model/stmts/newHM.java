@@ -3,8 +3,11 @@ package model.stmts;
 import exceptions.ADTException;
 import exceptions.ExpException;
 import exceptions.StmtException;
+import exceptions.TypeException;
 import model.expressions.IExp;
 import model.prg.PrgState;
+import model.prg.adt.MyIDictionary;
+import model.type.IType;
 import model.type.RefType;
 import model.values.IValue;
 import model.values.RefValue;
@@ -36,6 +39,16 @@ public class newHM implements IStmt {
     @Override
     public IStmt deepCopy() {
         return new newHM(varName, expression.deepCopy());
+    }
+
+    @Override
+    public MyIDictionary<String, IType> typecheck(MyIDictionary<String, IType> typeEnv) throws TypeException, ADTException {
+        IType typevar = typeEnv.getType(varName);
+        IType typexp = expression.typecheck(typeEnv);
+        if (typevar.equals(new RefType(typexp)))
+            return typeEnv;
+        else
+            throw new TypeException("NEW stmt: right hand side and left hand side have different types \n");
     }
 
     public String toString() {

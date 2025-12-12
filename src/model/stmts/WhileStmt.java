@@ -3,12 +3,18 @@ package model.stmts;
 import exceptions.ADTException;
 import exceptions.ExpException;
 import exceptions.StmtException;
+import exceptions.TypeException;
 import model.expressions.IExp;
 import model.prg.PrgState;
+import model.prg.adt.MyIDictionary;
+import model.type.BoolType;
+import model.type.IType;
 import model.values.BoolValue;
 import model.values.IValue;
 
 import java.io.IOException;
+
+import static java.lang.IO.print;
 
 public class WhileStmt implements IStmt {
     IExp expression;
@@ -33,6 +39,15 @@ public class WhileStmt implements IStmt {
     @Override
     public IStmt deepCopy() {
         return new WhileStmt(expression.deepCopy(), stmt.deepCopy());
+    }
+
+    @Override
+    public MyIDictionary<String, IType> typecheck(MyIDictionary<String, IType> typeEnv) throws TypeException, ADTException {
+        IType typexp = expression.typecheck(typeEnv);
+        if (typexp.equals(new BoolType())) {
+            return stmt.typecheck(typeEnv.deepCopy());
+        } else
+            throw new TypeException("The condition of While has not the type bool\n");
     }
 
     public String toString() {

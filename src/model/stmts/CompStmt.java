@@ -1,7 +1,11 @@
 package model.stmts;
 
+import exceptions.ADTException;
+import exceptions.TypeException;
 import model.prg.PrgState;
+import model.prg.adt.MyIDictionary;
 import model.prg.adt.MyIStack;
+import model.type.IType;
 
 public class CompStmt implements IStmt {
     private final IStmt first;
@@ -23,6 +27,11 @@ public class CompStmt implements IStmt {
     @Override
     public IStmt deepCopy() {
         return new CompStmt(first.deepCopy(), second.deepCopy());
+    }
+
+    @Override
+    public MyIDictionary<String, IType> typecheck(MyIDictionary<String, IType> typeEnv) throws TypeException, ADTException {
+        return second.typecheck(first.typecheck(typeEnv));
     }
 
     public String toString() {

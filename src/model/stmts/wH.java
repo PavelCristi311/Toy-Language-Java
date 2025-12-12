@@ -3,8 +3,11 @@ package model.stmts;
 import exceptions.ADTException;
 import exceptions.ExpException;
 import exceptions.StmtException;
+import exceptions.TypeException;
 import model.expressions.IExp;
 import model.prg.PrgState;
+import model.prg.adt.MyIDictionary;
+import model.type.IType;
 import model.type.RefType;
 import model.values.IValue;
 import model.values.RefValue;
@@ -38,6 +41,16 @@ public class wH implements IStmt {
     @Override
     public IStmt deepCopy() {
         return new wH(varName, expression.deepCopy());
+    }
+
+    @Override
+    public MyIDictionary<String, IType> typecheck(MyIDictionary<String, IType> typeEnv) throws TypeException, ADTException {
+        IType typ1,typ2;
+        typ1 = typeEnv.getType(varName);
+        typ2 = expression.typecheck(typeEnv);
+        if (!(typ1 instanceof RefType)) throw new TypeException("The variable type is not ref!\n");
+        if (!(typ2.equals(((RefType) typ1).getInner()))) throw new TypeException("The expression type is different from the variable location type!\n");
+        return typeEnv;
     }
 
     @Override

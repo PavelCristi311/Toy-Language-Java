@@ -2,6 +2,7 @@ package model.stmts;
 
 import exceptions.ADTException;
 import exceptions.StmtException;
+import exceptions.TypeException;
 import model.prg.PrgState;
 import model.prg.adt.MyIDictionary;
 import model.type.IType;
@@ -29,6 +30,12 @@ public class VarDeclStmt implements IStmt {
     @Override
     public IStmt deepCopy() {
         return new VarDeclStmt(id, type.deepCopy());
+    }
+
+    @Override
+    public MyIDictionary<String, IType> typecheck(MyIDictionary<String, IType> typeEnv) throws TypeException, ADTException {
+        typeEnv.put(id, type);
+        return typeEnv;
     }
 
     @Override

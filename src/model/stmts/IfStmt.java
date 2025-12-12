@@ -3,10 +3,12 @@ package model.stmts;
 import exceptions.ADTException;
 import exceptions.ExpException;
 import exceptions.StmtException;
+import exceptions.TypeException;
 import model.expressions.IExp;
 import model.prg.PrgState;
 import model.prg.adt.MyIDictionary;
 import model.type.BoolType;
+import model.type.IType;
 import model.values.BoolValue;
 import model.values.IValue;
 
@@ -41,7 +43,18 @@ public class IfStmt implements IStmt {
     }
 
     @Override
+    public MyIDictionary<String, IType> typecheck(MyIDictionary<String, IType> typeEnv) throws TypeException, ADTException {
+        IType typexp = exp.typecheck(typeEnv);
+        if (typexp.equals(new BoolType())) {
+            thenS.typecheck(typeEnv.deepCopy());
+            elseS.typecheck(typeEnv.deepCopy());
+            return typeEnv;
+        } else
+            throw new TypeException("The condition of IF has not the type bool\n");
+    }
+
+    @Override
     public String toString() {
-        return "if (" + exp.toString() + ") then " + thenS.toString() + " else " + elseS.toString();
+        return "if (   " + exp.toString() + ") then " + thenS.toString() + " else " + elseS.toString();
     }
 }

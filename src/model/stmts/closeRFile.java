@@ -3,8 +3,11 @@ package model.stmts;
 import exceptions.ADTException;
 import exceptions.ExpException;
 import exceptions.StmtException;
+import exceptions.TypeException;
 import model.expressions.IExp;
 import model.prg.PrgState;
+import model.prg.adt.MyIDictionary;
+import model.type.IType;
 import model.type.StringType;
 import model.values.StringValue;
 
@@ -31,6 +34,15 @@ public class closeRFile implements IStmt {
     @Override
     public IStmt deepCopy() {
         return new closeRFile(exp.deepCopy());
+    }
+
+    @Override
+    public MyIDictionary<String, IType> typecheck(MyIDictionary<String, IType> typeEnv) throws TypeException, ADTException {
+        IType typexp = exp.typecheck(typeEnv);
+        if (typexp.equals(new StringType()))
+            return typeEnv;
+        else
+            throw new TypeException("The expression of close file is not of type String\n");
     }
 
     @Override

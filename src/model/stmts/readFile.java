@@ -3,8 +3,11 @@ package model.stmts;
 import exceptions.ADTException;
 import exceptions.ExpException;
 import exceptions.StmtException;
+import exceptions.TypeException;
 import model.expressions.IExp;
 import model.prg.PrgState;
+import model.prg.adt.MyIDictionary;
+import model.type.IType;
 import model.type.IntType;
 import model.type.StringType;
 import model.values.IntValue;
@@ -46,6 +49,16 @@ public class readFile implements IStmt {
     @Override
     public IStmt deepCopy() {
         return new readFile(exp.deepCopy(), var_name);
+    }
+
+    @Override
+    public MyIDictionary<String, IType> typecheck(MyIDictionary<String, IType> typeEnv) throws TypeException, ADTException {
+        IType typ1;
+        typ1 = typeEnv.getType(var_name);
+        IType typexp = exp.typecheck(typeEnv);
+        if (!typ1.equals(new IntType())) throw new TypeException("The variable type is not int! \n");
+        if (!typexp.equals(new StringType())) throw new TypeException("The expression value is not a string! \n");
+        return typeEnv;
     }
 
     @Override
