@@ -15,6 +15,11 @@ public class OutList implements MyIList<String> {
     }
 
     @Override
+    public ArrayList<String> getList() {
+        return outputList;
+    }
+
+    @Override
     public String toString() {
         if (outputList.isEmpty()) return "The Output List is empty! \n";
         StringBuilder result = new StringBuilder("The Output List is as following: \n    ");

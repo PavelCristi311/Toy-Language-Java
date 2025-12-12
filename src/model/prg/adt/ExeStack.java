@@ -2,6 +2,8 @@ package model.prg.adt;
 
 import exceptions.ADTException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class ExeStack<T> implements MyIStack<T> {
@@ -33,6 +35,25 @@ public class ExeStack<T> implements MyIStack<T> {
         T result = tail.pop();
         tail.push(result);
         return result;
+    }
+
+    public List<T> getReverse() {
+        List<T> list = new ArrayList<>();
+        Stack<T> tempStack = new Stack<>();
+
+        // Copy elements to temp stack
+        while (!tail.isEmpty()) {
+            tempStack.push(tail.pop());
+        }
+
+        // Restore original stack and build list
+        while (!tempStack.isEmpty()) {
+            T stmt = tempStack.pop();
+            list.add(stmt);
+            tail.push(stmt);
+        }
+
+        return list;
     }
 
     @Override

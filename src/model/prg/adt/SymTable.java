@@ -69,12 +69,15 @@ public class SymTable implements MyIDictionary<String, IValue> {
         return result.toString();
     }
 
-    public HashMap<String, IValue> deepCopy() {
-        return dict.entrySet().stream()
+    public MyIDictionary<String, IValue> deepCopy() {
+        HashMap<String, IValue> hash = dict.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         e -> e.getValue().deepCopy(),
-                        (v1, v2) -> v1,
+                        (v1, _) -> v1,
                         HashMap::new));
+        SymTable newTable = new SymTable();
+        newTable.setContent(hash);
+        return newTable;
     }
 }

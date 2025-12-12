@@ -23,5 +23,6 @@ public interface MyIDictionary<K, V> {
 
     void setContent(HashMap<K, V> map);
 
-    HashMap<K, V> deepCopy();
+    MyIDictionary<K, V> deepCopy();
+
 }

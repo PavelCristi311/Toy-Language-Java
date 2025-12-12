@@ -6,6 +6,7 @@ import model.values.IValue;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Heap implements MyIHeap<Integer, IValue> {
     private HashMap<Integer, IValue> heap;
@@ -26,8 +27,16 @@ public class Heap implements MyIHeap<Integer, IValue> {
     }
 
     @Override
-    public HashMap<Integer, IValue> deepCopy() {
-        return null;
+    public MyIDictionary<Integer, IValue> deepCopy() {
+        HashMap<Integer, IValue> hash = heap.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> e.getValue().deepCopy(),
+                        (v1, v2) -> v1,
+                        HashMap::new));
+        Heap newHeap = new Heap();
+        newHeap.setContent(hash);
+        return newHeap;
     }
 
     synchronized public Integer getNextKey() {

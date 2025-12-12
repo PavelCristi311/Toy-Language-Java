@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class FileTable implements MyIDictionary<StringValue, BufferedReader> {
     private HashMap<StringValue, BufferedReader> dict;
@@ -63,8 +64,16 @@ public class FileTable implements MyIDictionary<StringValue, BufferedReader> {
     }
 
     @Override
-    public HashMap<StringValue, BufferedReader> deepCopy() {
-        return null;
+    public MyIDictionary<StringValue, BufferedReader> deepCopy() {
+        HashMap<StringValue, BufferedReader> hash = dict.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (v1, _) -> v1,
+                        HashMap::new));
+        FileTable newTable = new FileTable();
+        newTable.setContent(hash);
+        return newTable;
     }
 
     public String toString() {
