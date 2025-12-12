@@ -38,6 +38,10 @@ public class PrgState {
         stk.push(prg);
     }
 
+    public int getId() {
+        return id;
+    }
+
     synchronized public static int getNextId() {
         return ++lastId;
     }
