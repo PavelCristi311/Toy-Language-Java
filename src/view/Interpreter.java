@@ -14,13 +14,36 @@ import model.values.IntValue;
 import model.values.StringValue;
 import repo.Repository;
 
+import java.util.ArrayList;
+
+import static java.lang.IO.print;
+
 public class Interpreter {
-    static void main(String[] args) {
+    ArrayList<Controller> Clist= new ArrayList<>();
+    ArrayList<IStmt> PrgL=new ArrayList<>();
+
+    public Interpreter() {
+        int currentProg=0;
+        TextMenu menu = new TextMenu();
+        menu.addCommand(new ExitCommand("0","exit"));
         // int v;
         // v=2;
         // Print(v) is represented as:
         IStmt ex1 = new CompStmt(new VarDeclStmt("v", new IntType()),
                 new CompStmt(new AssignStmt("v", new ValueExp(new IntValue(2))), new PrintStmt(new VarExp("v"))));
+        TypeEnv ex1env=new TypeEnv();
+        try {
+            ex1.typecheck(ex1env);
+            PrgState prg1 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex1);
+            Repository rep1 = new Repository();
+            rep1.add(prg1);
+            Controller c1 = new Controller(rep1);
+            Clist.add(c1);
+            PrgL.add(ex1);
+            menu.addCommand(new RunExample(""+ ++currentProg, ex1.toString(), c1));
+        }catch(Exception e){
+            print("Program 1 could not be initialized : "+e.getMessage());
+        }
 
         // int a;
         // int b;
@@ -32,6 +55,19 @@ public class Interpreter {
                 new CompStmt(new VarDeclStmt("b", new IntType()),
                         new CompStmt(new AssignStmt("a", new ArithExp('+', new ValueExp(new IntValue(2)), new ArithExp('*', new ValueExp(new IntValue(3)), new ValueExp(new IntValue(5))))),
                                 new CompStmt(new AssignStmt("b", new ArithExp('+', new VarExp("a"), new ValueExp(new IntValue(1)))), new PrintStmt(new VarExp("b"))))));
+        TypeEnv ex2env=new TypeEnv();
+        try {
+            ex2.typecheck(ex2env);
+            PrgState prg2 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex2);
+            Repository rep2 = new Repository();
+            rep2.add(prg2);
+            Controller c2 = new Controller(rep2);
+            Clist.add(c2);
+            PrgL.add(ex2);
+            menu.addCommand(new RunExample(""+ ++currentProg, ex2.toString(), c2));
+        }catch(Exception e){
+            print("Program 2 could not be initialized : "+e.getMessage());
+        }
 
         // bool a ;
         // int v;
@@ -44,6 +80,19 @@ public class Interpreter {
                 new CompStmt(new VarDeclStmt("v", new IntType()),
                         new CompStmt(new AssignStmt("a", new ValueExp(new BoolValue(true))),
                                 new CompStmt(new IfStmt(new VarExp("a"), new AssignStmt("v", new ValueExp(new IntValue(2))), new AssignStmt("v", new ValueExp(new IntValue(3)))), new PrintStmt(new VarExp("v"))))));
+        TypeEnv ex3env=new TypeEnv();
+        try {
+            ex3.typecheck(ex3env);
+            PrgState prg3 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex3);
+            Repository rep3 = new Repository();
+            rep3.add(prg3);
+            Controller c3 = new Controller(rep3);
+            Clist.add(c3);
+            PrgL.add(ex3);
+            menu.addCommand(new RunExample(""+ ++currentProg, ex3.toString(), c3));
+        }catch(Exception e){
+            print("Program 3 could not be initialized : "+e.getMessage());
+        }
 
         // string varf;
         // varf=test.in;
@@ -62,6 +111,19 @@ public class Interpreter {
                 new PrintStmt(new VarExp("varc")), new CompStmt(
                 new readFile(new VarExp("varf"), "varc"), new CompStmt(
                 new PrintStmt(new VarExp("varc")), new closeRFile(new VarExp("varf"))))))))));
+        TypeEnv ex4env=new TypeEnv();
+        try {
+            ex4.typecheck(ex4env);
+            PrgState prg4 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex4);
+            Repository rep4 = new Repository();
+            rep4.add(prg4);
+            Controller c4 = new Controller(rep4);
+            Clist.add(c4);
+            PrgL.add(ex4);
+            menu.addCommand(new RunExample(""+ ++currentProg, ex4.toString(), c4));
+        }catch(Exception e){
+            print("Program 4 could not be initialized : "+e.getMessage());
+        }
 
         //Example:
         // Ref int v
@@ -77,6 +139,19 @@ public class Interpreter {
                 new VarDeclStmt("a", new RefType(new RefType(new IntType()))), new CompStmt(
                 new newHM("a", new VarExp("v")), new CompStmt(
                 new PrintStmt(new VarExp("v")), new PrintStmt(new VarExp("a")))))));
+        TypeEnv ex5env=new TypeEnv();
+        try {
+            ex5.typecheck(ex5env);
+            PrgState prg5 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex5);
+            Repository rep5 = new Repository();
+            rep5.add(prg5);
+            Controller c5 = new Controller(rep5);
+            Clist.add(c5);
+            PrgL.add(ex5);
+            menu.addCommand(new RunExample(""+ ++currentProg, ex5.toString(), c5));
+        }catch(Exception e){
+            print("Program 5 could not be initialized : "+e.getMessage());
+        }
 
         //Example:
         // Ref int v;
@@ -91,6 +166,19 @@ public class Interpreter {
                 new PrintStmt(new rH(new VarExp("v"))), new CompStmt(
                 new wH("v", new ValueExp(new IntValue(30))),
                 new PrintStmt(new ArithExp('+', new rH(new VarExp("v")), new ValueExp(new IntValue(5))))))));
+        TypeEnv ex6env=new TypeEnv();
+        try {
+            ex6.typecheck(ex6env);
+            PrgState prg6 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex6);
+            Repository rep6 = new Repository();
+            rep6.add(prg6);
+            Controller c6 = new Controller(rep6);
+            Clist.add(c6);
+            PrgL.add(ex6);
+            menu.addCommand(new RunExample(""+ ++currentProg, ex6.toString(), c6));
+        }catch(Exception e){
+            print("Program 6 could not be initialized : "+e.getMessage());
+        }
 
         IStmt ex7 = new CompStmt(new VarDeclStmt("v", new RefType(new IntType())), new CompStmt(
                 new newHM("v", new ValueExp(new IntValue(20))), new CompStmt(
@@ -100,6 +188,20 @@ public class Interpreter {
                 new newHM("b", new VarExp("a")), new CompStmt(
                 new newHM("v", new ValueExp(new IntValue(30))),
                 new PrintStmt(new rH(new rH(new VarExp("a")))))))))));
+        TypeEnv ex7env=new TypeEnv();
+        try {
+            ex7.typecheck(ex7env);
+            PrgState prg7 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex7);
+            Repository rep7 = new Repository();
+            rep7.add(prg7);
+            Controller c7 = new Controller(rep7);
+            Clist.add(c7);
+            PrgL.add(ex7);
+            menu.addCommand(new RunExample(""+ ++currentProg, ex7.toString(), c7));
+        }catch(Exception e){
+            print("Program 7 could not be initialized : "+e.getMessage());
+        }
+
         //int x;
         //x=5;
         //while(x>0){
@@ -112,6 +214,19 @@ public class Interpreter {
                 new RelationalExp(">", new VarExp("x"), new ValueExp(new IntValue(0))),
                 new CompStmt(new PrintStmt(new VarExp("x")),
                         new AssignStmt("x", new ArithExp('-', new VarExp("x"), new ValueExp(new IntValue(1))))))));
+        TypeEnv ex8env=new TypeEnv();
+        try {
+            ex8.typecheck(ex8env);
+            PrgState prg8 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex8);
+            Repository rep8 = new Repository();
+            rep8.add(prg8);
+            Controller c8 = new Controller(rep8);
+            Clist.add(c8);
+            PrgL.add(ex8);
+            menu.addCommand(new RunExample(""+ ++currentProg, ex8.toString(), c8));
+        }catch(Exception e){
+            print("Program 8 could not be initialized : "+e.getMessage());
+        }
 
         //Example:
         //Ref int v;
@@ -127,7 +242,19 @@ public class Interpreter {
                 new newHM("a", new VarExp("v")), new CompStmt(
                 new newHM("v", new ValueExp(new IntValue(30))),
                 new PrintStmt(new rH(new rH(new VarExp("a")))))))));
-
+        TypeEnv ex9env=new TypeEnv();
+        try {
+            ex9.typecheck(ex9env);
+            PrgState prg9 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex9);
+            Repository rep9 = new Repository();
+            rep9.add(prg9);
+            Controller c9 = new Controller(rep9);
+            Clist.add(c9);
+            PrgL.add(ex9);
+            menu.addCommand(new RunExample(""+ ++currentProg, ex9.toString(), c9));
+        }catch(Exception e){
+            print("Program 9 could not be initialized : "+e.getMessage());
+        }
 
 //      Example:
 //        int v;
@@ -155,64 +282,43 @@ public class Interpreter {
                 )), new CompStmt(new PrintStmt(new VarExp("v")), new PrintStmt(new rH(new VarExp("a"))))
         )))));
 
+        TypeEnv ex10env=new TypeEnv();
+        try {
+            ex10.typecheck(ex10env);
+            PrgState prg10 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex10);
+            Repository rep10 = new Repository();
+            rep10.add(prg10);
+            Controller c10 = new Controller(rep10);
+            Clist.add(c10);
+            PrgL.add(ex10);
+            menu.addCommand(new RunExample(""+ ++currentProg, ex10.toString(), c10));
+        }catch(Exception e){
+            print("Program 10 could not be initialized : "+e.getMessage());
+        }
+
+        IStmt ex11=new NopStmt();
+        TypeEnv ex11env=new TypeEnv();
+        try {
+            ex11.typecheck(ex11env);
+            PrgState prg11 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex11);
+            Repository rep11 = new Repository();
+            rep11.add(prg11);
+            Controller c11 = new Controller(rep11);
+            Clist.add(c11);
+            PrgL.add(ex11);
+            menu.addCommand(new RunExample(""+ ++currentProg, ex11.toString(), c11));
+        }catch(Exception e){
+            print("Program 11 could not be initialized : "+e.getMessage());
+        }
+
+    }
 
 
-        PrgState prg1 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex1);
-        PrgState prg2 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex2);
-        PrgState prg3 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex3);
-        PrgState prg4 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex4);
-        PrgState prg5 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex5);
-        PrgState prg6 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex6);
-        PrgState prg7 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex7);
-        PrgState prg8 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex8);
-        PrgState prg9 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex9);
-        PrgState prg10 = new PrgState(PrgState.getNextId(), new ExeStack<>(), new SymTable(), new OutList(), new FileTable(), new Heap(), ex10);
+    public ArrayList<Controller> getClist() {
+        return Clist;
+    }
 
-        Repository rep1 = new Repository();
-        rep1.add(prg1);
-        Repository rep2 = new Repository();
-        rep2.add(prg2);
-        Repository rep3 = new Repository();
-        rep3.add(prg3);
-        Repository rep4 = new Repository();
-        rep4.add(prg4);
-        Repository rep5 = new Repository();
-        rep5.add(prg5);
-        Repository rep6 = new Repository();
-        rep6.add(prg6);
-        Repository rep7 = new Repository();
-        rep7.add(prg7);
-        Repository rep8 = new Repository();
-        rep8.add(prg8);
-        Repository rep9 = new Repository();
-        rep9.add(prg9);
-        Repository rep10 = new Repository();
-        rep10.add(prg10);
-
-        Controller c1 = new Controller(rep1);
-        Controller c2 = new Controller(rep2);
-        Controller c3 = new Controller(rep3);
-        Controller c4 = new Controller(rep4);
-        Controller c5 = new Controller(rep5);
-        Controller c6 = new Controller(rep6);
-        Controller c7 = new Controller(rep7);
-        Controller c8 = new Controller(rep8);
-        Controller c9 = new Controller(rep9);
-        Controller c10 = new Controller(rep10);
-
-        TextMenu menu = new TextMenu();
-        menu.addCommand(new ExitCommand("0", "exit"));
-        menu.addCommand(new RunExample("1", ex1.toString(), c1));
-        menu.addCommand(new RunExample("2", ex2.toString(), c2));
-        menu.addCommand(new RunExample("3", ex3.toString(), c3));
-        menu.addCommand(new RunExample("4", ex4.toString(), c4));
-        menu.addCommand(new RunExample("5", ex5.toString(), c5));
-        menu.addCommand(new RunExample("6", ex6.toString(), c6));
-        menu.addCommand(new RunExample("7", ex7.toString(), c7));
-        menu.addCommand(new RunExample("8", ex8.toString(), c8));
-        menu.addCommand(new RunExample("9", ex9.toString(), c9));
-        menu.addCommand(new RunExample("10", ex10.toString(), c10));
-
-        menu.show();
+    public ArrayList<IStmt> getPrgL() {
+        return PrgL;
     }
 }
