@@ -10,7 +10,7 @@ public class RefType implements IType {
         this.inner = inner;
     }
 
-    IType getInner() {
+    public IType getInner() {
         return inner;
     }
 
