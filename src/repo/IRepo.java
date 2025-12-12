@@ -27,4 +27,6 @@ public interface IRepo {
     List<PrgState> getPrgList();
 
     void setPrgList(List<PrgState> list);
+
+    void setLogFilePath(String absolutePath);
 }

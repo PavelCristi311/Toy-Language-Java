@@ -15,7 +15,7 @@ import static java.lang.IO.print;
 public class Repository implements IRepo {
     private List<PrgState> prgRepo;
     private int currentIndex = -1;
-    private final String logFilePath;
+    private String logFilePath;
 
     public Repository() {
         prgRepo = new ArrayList<>();
@@ -89,6 +89,11 @@ public class Repository implements IRepo {
     @Override
     public void setPrgList(List<PrgState> list) {
         prgRepo = list;
+    }
+
+    @Override
+    public void setLogFilePath(String absolutePath) {
+        logFilePath=absolutePath;
     }
 
     @Override
